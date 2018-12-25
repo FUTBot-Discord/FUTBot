@@ -12,6 +12,8 @@ client.registry
         ['fut_playersearch', 'FUT PlayerSearch'],
         ['fut_join', 'Join'],
         ['fut_leave', 'Leave'],
+        ['fut_chem', 'Chem'],
+        ['fut_position', 'Position'],
         ['fut_stop', 'Stop'],
         ['fut_play', 'Play'],
         ['fut_skip', 'Skip'],

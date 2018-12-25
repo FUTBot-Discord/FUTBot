@@ -5,9 +5,9 @@ const tabletojson = require('tabletojson');
 class CheapestSearchCommand extends commando.Command {
     constructor(client) {
         super(client, {
-            name: 'cheapestpos',
-            group: 'fut_cheapest',
-            memberName: 'cheapestpos',
+            name: 'position',
+            group: 'fut_position',
+            memberName: 'position',
             description: 'Geeft prijzelijst van alle positie wijzingen'
         });
     }
