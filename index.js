@@ -23,12 +23,6 @@ client.registry
 client.on('ready', function () {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guild(s).`);
     client.user.setActivity(`${client.guilds.size} server(s)`, { type: 'WATCHING' });
-    //console.log("Ready for take off");
-    //var guild = client.guilds.get('470582456828035073');
-    //var rolename = guild.roles.find('name', 'Beheerder');
-    //var rolename = client.users.find('discriminator', '6304', 'username', 'Tjird');
-    //console.log(guild.name);
-    //console.log("==================");
 });
 
 // client.on('message', function () {
