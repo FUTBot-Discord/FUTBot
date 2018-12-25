@@ -110,7 +110,24 @@ class PlayerSearchCommand extends commando.Command {
             const author = `${fullname} - ${rating} ${position}`;
             var title1 = searchbyid.items[0].rarityId + "-" + searchbyid.items[0].quality;
             var title = raritiesjson.dynamicRarities[title1].toString();
-            if (title1 == "70-gold") var title = "Champions League TOTT Rare";
+            switch (title1.toString()) {
+                case "70-gold":
+                    var title = "Champions League TOTGS Rare";
+                    break;
+                case "32-gold":
+                    var title = "FUTMas-SBC";
+                    break;
+                case "46-gold":
+                    var title = "Europa League Live Rare";
+                    break;
+                case "50-gold":
+                    var title = "Champions League Live Rare";
+                    break;
+                case "68-gold":
+                    var title = "Europa League TOTGS Rare";
+                    break;
+
+            }
             var height = searchbyid.items[0].height.toString().substring(0, 1) + "." + searchbyid.items[0].height.toString().substring(1, 4) + "m";
             const description = `**${snl}**: ${searchbyid.items[0].attributes[0].value} **${sch}**: ${searchbyid.items[0].attributes[1].value} **${pas}**: ${searchbyid.items[0].attributes[2].value} **${dri}**: ${searchbyid.items[0].attributes[3].value} **${vrd}**: ${searchbyid.items[0].attributes[4].value} **${fys}**: ${searchbyid.items[0].attributes[5].value}\n**WT**: ${searchbyid.items[0].atkWorkRate.charAt(0)}/${searchbyid.items[0].defWorkRate.charAt(0)} **SM**: ${searchbyid.items[0].skillMoves}★ **ZB**: ${searchbyid.items[0].weakFoot}★\n:footprints: ${searchbyid.items[0].foot.charAt(0)} :straight_ruler: ${height} :scales:️ ${searchbyid.items[0].weight}kg :calendar_spiral: ${searchbyid.items[0].age}`;
             const embed = new Discord.RichEmbed()
@@ -137,7 +154,24 @@ class PlayerSearchCommand extends commando.Command {
                 var playerName = a.items[i].firstName + " " + a.items[i].lastName;
                 var version1 = a.items[i].rarityId + "-" + a.items[i].quality;
                 var version = raritiesjson.dynamicRarities[version1];
-                if (version1 == "70-gold") var version = "Champions League TOTT Rare";
+                switch (version1.toString()) {
+                    case "70-gold":
+                        var version = "Champions League TOTGS Rare";
+                        break;
+                    case "32-gold":
+                        var version = "FUTMas-SBC";
+                        break;
+                    case "46-gold":
+                        var version = "Europa League Live Rare";
+                        break;
+                    case "50-gold":
+                        var version = "Champions League Live Rare";
+                        break;
+                    case "68-gold":
+                        var version = "Europa League TOTGS Rare";
+                        break;
+    
+                }
                 resultsPlayer.push({ choice: j, name: playerName, ovr: a.items[i].rating, version: version, playerid: a.items[i].id });
                 table.addRow(j, playerName, a.items[i].rating, version);
             }
