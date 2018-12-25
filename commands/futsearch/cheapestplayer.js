@@ -18,7 +18,7 @@ class CheapestSearchCommand extends commando.Command {
         var slice = split.slice(0, 1);
         var slice2 = split.slice(1, 2);
 
-        var url = `https://www.futbin.com/19/players?page=1&${slice2}_price=200-100000&player_rating=${slice}&sort=${slice2}_price&order=asc`;
+        var url = `https://www.futbin.com/19/players?page=1&${slice2}_price=200-100000000&player_rating=${slice}&sort=${slice2}_price&order=asc`;
 
         if (slice2[0]) {
             var slice2 = slice2[0].toString().toUpperCase();
