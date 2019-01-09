@@ -1,6 +1,7 @@
 const Commando = require('discord.js-commando');
 const client = new Commando.Client({
-    owner: '259012839379828739'
+    owner: '259012839379828739',
+    commandPrefix: 'fut!'
 });
 const path = require('path');
 var CONFIG = require('../config.json');
@@ -10,16 +11,10 @@ client.login(CONFIG.token);
 client.registry
     .registerGroups([
         ['fut_playersearch', 'FUT PlayerSearch'],
-        ['fut_join', 'Join'],
-        ['fut_leave', 'Leave'],
         ['fut_chem', 'Chem'],
         ['fut_position', 'Position'],
-        ['fut_stop', 'Stop'],
-        ['fut_play', 'Play'],
-        ['fut_skip', 'Skip'],
         ['fut_cheapest', 'FUT Cheapest']
     ])
-    .registerDefaults()
     .registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.on('ready', function () {

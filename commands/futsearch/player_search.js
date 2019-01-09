@@ -6,9 +6,9 @@ const Discord = require('discord.js');
 class PlayerSearchCommand extends commando.Command {
     constructor(client) {
         super(client, {
-            name: 'speler',
+            name: 'player',
             group: 'fut_playersearch',
-            memberName: 'speler',
+            memberName: 'player',
             description: 'Zoekt een speler van de FUT market'
         });
     }
@@ -104,7 +104,12 @@ class PlayerSearchCommand extends commando.Command {
                 var vrd = 'VRD';
                 var fys = 'FYS';
             }
-            const fullname = `${searchbyid.items[0].firstName.toString()} ${searchbyid.items[0].lastName.toString()}`;
+
+            if (searchbyid.items[0].commonName !== '') {
+                var fullname = `${searchbyid.items[0].commonName.toString()}`;
+            } else {
+                var fullname = `${searchbyid.items[0].firstName.toString()} ${searchbyid.items[0].lastName.toString()}`;
+            }
             const rating = searchbyid.items[0].rating.toString();
             const position = searchbyid.items[0].position.toString();
             const author = `${fullname} - ${rating} ${position}`;
@@ -151,7 +156,11 @@ class PlayerSearchCommand extends commando.Command {
             for (var i = 0; i < a.items.length; i++) {
                 if (i == n) break;
                 var j = i + 1;
-                var playerName = a.items[i].firstName + " " + a.items[i].lastName;
+                if (a.items[i].commonName !== '') {
+                    var playerName = a.items[i].commonName;
+                } else {
+                    var playerName = a.items[i].firstName + " " + a.items[i].lastName;
+                }
                 var version1 = a.items[i].rarityId + "-" + a.items[i].quality;
                 var version = raritiesjson.dynamicRarities[version1];
                 switch (version1.toString()) {
