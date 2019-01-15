@@ -15,7 +15,7 @@ class PlayerSearchCommand extends commando.Command {
 
     async run(message, args) {
         if (message.author.bot) return;
-        var quality = "0-gold,0-silver,1-bronze,1-gold,1-silver,10-gold,11-gold,12-gold,16-gold,17-gold,21-gold,22-gold,23-gold,24-gold,25-gold,26-gold,28-gold,3-bronze,3-gold,3-silver,30-gold,32-gold,37-gold,4-gold,42-gold,43-gold,44-gold,45-gold,46-gold,47-gold,48-gold,49-gold,5-gold,50-gold,51-gold,52-bronze,52-gold,52-silver,53-gold,54-gold,55-gold,56-gold,57-gold,58-gold,59-gold,6-gold,60-gold,61-gold,62-gold,63-gold,64-gold,65-gold,66-gold,67-gold,68-gold,69-gold,7-gold,70-gold,71-gold,78-gold,79-gold,8-gold,80-gold,9-gold";
+        var quality = "0-bronze,0-gold,0-silver,1-bronze,1-gold,1-silver,10-gold,11-gold,12-gold,16-gold,17-gold,21-gold,22-gold,23-gold,24-gold,25-gold,26-gold,28-gold,3-bronze,3-gold,3-silver,30-gold,32-gold,37-gold,4-gold,42-gold,43-gold,44-gold,45-gold,46-gold,47-gold,48-gold,49-gold,5-gold,50-gold,51-gold,52-bronze,52-gold,52-silver,53-gold,54-gold,55-gold,56-gold,57-gold,58-gold,59-gold,6-gold,60-gold,61-gold,62-gold,63-gold,64-gold,65-gold,66-gold,67-gold,68-gold,69-gold,7-gold,70-gold,71-gold,78-gold,79-gold,8-gold,80-gold,9-gold";
 
         const filter = m => m.author.id === message.author.id;
 
@@ -27,13 +27,13 @@ class PlayerSearchCommand extends commando.Command {
         var slice3 = split.slice(2, 3);
 
         if (split.length == 1) {
-            var url = `https://www.easports.com/nl/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22%7D`;
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22%7D`;
         } else if (split.length == 2 && isFinite(slice2.toString())) {
-            var url = `https://www.easports.com/nl/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice2}%22%7D`;
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice2}%22%7D`;
         } else if (split.length == 2 && isNaN(slice2.toString())) {
-            var url = `https://www.easports.com/nl/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22%7D`;
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22%7D`;
         } else if (split.length == 3 && isFinite(slice3.toString())) {
-            var url = `https://www.easports.com/nl/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice3}%22%7D`;
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice3}%22%7D`;
         } else {
             message.reply("Je commando voldoet niet aan de eisen van het commando.");
             return;
@@ -49,7 +49,7 @@ class PlayerSearchCommand extends commando.Command {
         let a = httpGet(url);
 
         function searchPlayer(playerid) {
-            let idurl = "https://www.easports.com/nl/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22id%22:%22" + playerid + `%22,%22quality%22:%22${quality}%22%7D`;
+            let idurl = "https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22id%22:%22" + playerid + `%22,%22quality%22:%22${quality}%22%7D`;
             let searchbyid = httpGet(idurl);
 
             let pricesurl = "https://www.futbin.com/19/playerPrices?player=" + playerid + "&_=1545322911135";
@@ -89,7 +89,7 @@ class PlayerSearchCommand extends commando.Command {
             const xbbinmessage3 = `**Range**: ${xbminprice} - ${xbmaxprice}\n`;
             const xbbinmessage4 = `**RPR**: ${xbprp}%`;
 
-            if (searchbyid.items[0].position.toString() == "DM") {
+            if (searchbyid.items[0].position.toString() == "GK") {
                 var snl = "DUI";
                 var sch = 'BEH';
                 var pas = 'TRP';
@@ -141,18 +141,18 @@ class PlayerSearchCommand extends commando.Command {
                 .setAuthor(author, searchbyid.items[0].club.imageUrls.dark.small.toString())
                 .setTitle(title)
                 .setDescription(description)
-                .setFooter("FUT Searcher v.1.0.0 | Prijzen van FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
-                .addField("Nationaliteit", searchbyid.items[0].nation.abbrName.toString(), true)
+                .setFooter("FUT Searcher v.1.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
+                .addField("Nation", searchbyid.items[0].nation.abbrName.toString(), true)
                 .addField("Club", `${searchbyid.items[0].club.name} (${searchbyid.items[0].league.abbrName})`, true)
-                .addField("PS", `**5 laagste NK prijzen**\n${psbinmessage1}${psbinmessage2}${psbinmessage3}${psbinmessage4}\n\n**Verandering sinds**\nComing soon...`, true)
-                .addField("XBOX", `**5 laagste NK prijzen**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Verandering sinds**\nComing soon...`, true)
-            message.reply("hier is jou aangevraagde speler:", { embed });
+                .addField("PS", `**5 lowest BIN prices**\n${psbinmessage1}${psbinmessage2}${psbinmessage3}${psbinmessage4}\n\n**Changed since**\nComing soon...`, true)
+                .addField("XBOX", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Changed since**\nComing soon...`, true)
+            message.reply("here is the requested player:", { embed });
         }
         if (a.totalResults > 1) {
             var n = 20;
             var resultsPlayer = [];
             var table = new AsciiTable()
-            table.setHeading('Keuze', 'Naam', 'OVR', 'Versie');
+            table.setHeading('Choice', 'Name', 'OVR', 'Version');
             for (var i = 0; i < a.items.length; i++) {
                 if (i == n) break;
                 var j = i + 1;
@@ -189,14 +189,14 @@ class PlayerSearchCommand extends commando.Command {
             table.setAlign(3, AsciiTable.LEFT);
             var datasend = "```" + table.toString() + "```";
             message.channel.send(datasend);
-            message.reply("maak een keuze door een nummer in te toetsen... Dit zal binnen 15 seconden verlopen...");
+            message.reply("make a choice by entering a number... This will expire within 15 seconds...\nType `cancel` to cancel the request.");
             message.channel.awaitMessages(filter, {
                 max: 1,
                 time: 15000
             }).then(collected => {
                 const number = collected.first().content;
-                if (number === 'annuleer') {
-                    return message.reply("Geannuleerd.");
+                if (number === 'cancel') {
+                    return message.reply("Cancelled.");
                 } else if (1 <= number && number <= 20) {
                     for (var n = 0; n < resultsPlayer.length + 1; n++) {
                         if (n == number) {
@@ -206,20 +206,20 @@ class PlayerSearchCommand extends commando.Command {
                     searchPlayer(playerid);
                 }
             }).catch(err => {
-                message.reply("Geannuleerd, tijd verlopen...");
+                message.reply("Cancelled, time expired...");
                 console.log(err);
             });
         } else if (a.totalResults == 1) {
             var playerid = a.items[0].id.toString();
             searchPlayer(playerid);
         } else if (args == "") {
-            message.reply("het commando is op de volgende manier te gebruiken:\n```!speler [spelernaam] <Overal rating>```\nDe spelernaam moet één woord zijn, overal rating is een optie deze hoeft dus niet.");
+            message.reply("the command can be used in the following way:\n```fut!player [playername] <Overall rating>```\nThe player name must be one word, overall rating is an option so it does not have to be.");
         } else if (args == "help") {
-            message.reply("het commando is op de volgende manier te gebruiken:\n```!speler [spelernaam] <Overal rating>```\nDe spelernaam moet één woord zijn, overal rating is een optie deze hoeft dus niet.");
+            message.reply("the command can be used in the following way:\n```fut!player [playername] <Overall rating>```\nThe player name must be one word, overall rating is an option so it does not have to be.");
         } else if (args == "info") {
-            message.reply("het commando is op de volgende manier te gebruiken:\n```!speler [spelernaam] <Overal rating>```\nDe spelernaam moet één woord zijn, overal rating is een optie deze hoeft dus niet.");
+            message.reply("the command can be used in the following way:\n```fut!player [playername] <Overall rating>```\nThe player name must be one word, overall rating is an option so it does not have to be.");
         } else {
-            message.reply("Geen speler(s) gevonden.");
+            message.reply("No player(s) found.");
         }
     }
 }

@@ -22,6 +22,8 @@ client.on('ready', function () {
     client.user.setActivity(`${client.guilds.size} server(s)`, { type: 'WATCHING' });
 });
 
+client.on('error', console.error);
+
 // client.on('message', function () {
 //     scrapeIt("https://www.futhead.com/19/squads/441381/", {
 //     title: ".header h1"

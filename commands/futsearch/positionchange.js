@@ -25,7 +25,7 @@ class CheapestSearchCommand extends commando.Command {
         );
 
         function tableinjson(table) {
-            const title = `Prijzen postitie verbruiksitems`;
+            const title = `Prices position consumables items`;
             const description = `Dit is een lijst met alle 20 positie wijziging verbruikitmes hun prijzen.`;
             const author = `Alle prijzen van de positie wijzigingen verbruiksitems`;
 
@@ -45,10 +45,10 @@ class CheapestSearchCommand extends commando.Command {
                 .setAuthor(author)
                 .setURL(url)
                 .setDescription(description)
-                .setFooter("FUT Searcher v.1.0.0 | Prijzen van FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
+                .setFooter("FUT Searcher v.1.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("PS", field1, true)
                 .addField("XBOX", field2, true)
-            message.reply("hier is jou aangevraagde lijst:", { embed });
+            message.reply("here is your requested list:", { embed });
         };
 
     }

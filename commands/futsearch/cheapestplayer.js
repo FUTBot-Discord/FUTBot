@@ -23,7 +23,7 @@ class CheapestSearchCommand extends commando.Command {
         if (slice2[0]) {
             var slice2 = slice2[0].toString().toUpperCase();
         } else {
-            message.reply("Vul aub een console in als 2de argument.")
+            message.reply("Fill in a console as second argument please.")
         }
         tabletojson.convertUrl(
             url,
@@ -33,8 +33,8 @@ class CheapestSearchCommand extends commando.Command {
         );
 
         function tableinjson(table) {
-            const title = `${slice} overal rating spelers`;
-            const description = `Dit is een lijst met de 10 goedkoopste spelers\n van ${slice} overal rating voor het platform ${slice2}`;
+            const title = `${slice} overall rating players`;
+            const description = `This is a list of the 10 cheapest players\n from ${slice} overall rating on the platform ${slice2}`; 
 
             var markersprice = [];
             var markersplayer = [];
@@ -48,14 +48,14 @@ class CheapestSearchCommand extends commando.Command {
 
             const embed = new Discord.RichEmbed()
                 .setColor(0x2FF37A)
-                .setAuthor(`Goedkoopste spelers per overal rating lijst`)
+                .setAuthor(`Cheapest players per overall rating list`)
                 .setTitle(title)
                 .setURL(url)
                 .setDescription(description)
-                .setFooter("FUT Searcher v.1.0.0 | Prijzen van FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
-                .addField("Naam", field1, true)
-                .addField("Prijs", field2, true)
-            message.reply("hier is jou aangevraagde lijst:", { embed });
+                .setFooter("FUT Searcher v.1.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
+                .addField("Name", field1, true)
+                .addField("Price", field2, true)
+            message.reply("here is your requested list:", { embed });
         };
 
     }

@@ -25,9 +25,9 @@ class CheapestSearchCommand extends commando.Command {
         );
 
         function tableinjson(table) {
-            const title = `Prijzen teamgeest verbruiksitems`;
-            const description = `Dit is een lijst met alle 23 teamgeet verbruikitmes hun prijzen.`;
-            const author = `Alle prijzen van de teamgeet verbruiksitems`;
+            const title = `Prices chemistry consumables items`;
+            const description = `This is a list with all 23 chemistry consumables items and there prices.`;
+            const author = `All chemistry consumables items prices`;
 
             var xboxprices = [];
             var psprices = [];
@@ -45,10 +45,10 @@ class CheapestSearchCommand extends commando.Command {
                 .setAuthor(author)
                 .setURL(url)
                 .setDescription(description)
-                .setFooter("FUT Searcher v.1.0.0 | Prijzen van FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
+                .setFooter("FUT Searcher v.1.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("PS", field1, true)
                 .addField("XBOX", field2, true)
-            message.reply("hier is jou aangevraagde lijst:", { embed });
+            message.reply("here is your requested list:", { embed });
         };
 
     }
