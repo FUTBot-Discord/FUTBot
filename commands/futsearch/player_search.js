@@ -181,8 +181,9 @@ class PlayerSearchCommand extends commando.Command {
             table.setAlign(2, AsciiTable.CENTER);
             table.setAlign(3, AsciiTable.LEFT);
             var datasend = "```" + table.toString() + "```";
-            message.channel.send(datasend);
-            message.reply("make a choice by entering a number... This will expire within 25 seconds...\nType `cancel` to cancel the request.");
+            message.delete();
+            message.channel.send(datasend).then( m => m.delete(25000));
+            message.reply("make a choice by entering a number... This will expire within 25 seconds...\nType `cancel` to cancel the request.").then( m => m.delete(25000));
             // #4479 
             message.channel.awaitMessages(filter, {
                 max: 1,
@@ -197,6 +198,7 @@ class PlayerSearchCommand extends commando.Command {
                             var playerid = resultsPlayer[n - 1].playerid.toString();
                         }
                     }
+                    collected.first().delete();
                     searchPlayer(playerid);
                 } else {
                     throw "Wrong message content. #4479";
@@ -211,6 +213,7 @@ class PlayerSearchCommand extends commando.Command {
             });
         } else if (a.totalResults == 1) {
             var playerid = a.items[0].id.toString();
+            message.delete();
             searchPlayer(playerid);
         } else {
             message.reply("No player(s) found.");
