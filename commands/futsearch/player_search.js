@@ -15,29 +15,7 @@ class PlayerSearchCommand extends commando.Command {
 
     async run(message, args) {
         if (message.author.bot) return;
-        var quality = "0-bronze,0-gold,0-silver,1-bronze,1-gold,1-silver,10-gold,11-gold,12-gold,16-gold,17-gold,21-gold,22-gold,23-gold,24-gold,25-gold,26-gold,28-gold,3-bronze,3-gold,3-silver,30-gold,32-gold,37-gold,4-gold,42-gold,43-gold,44-gold,45-gold,46-gold,47-gold,48-gold,49-gold,5-gold,50-gold,51-gold,52-bronze,52-gold,52-silver,53-gold,54-gold,55-gold,56-gold,57-gold,58-gold,59-gold,6-gold,60-gold,61-gold,62-gold,63-gold,64-gold,65-gold,66-gold,67-gold,68-gold,69-gold,7-gold,70-gold,71-gold,78-gold,79-gold,8-gold,80-gold,9-gold";
 
-        const filter = m => m.author.id === message.author.id;
-
-        var urlrarities = "https://www.easports.com/fifa/ultimate-team/api/fut/display";
-
-        var split = args.split(" ");
-        var slice = split.slice(0, 1);
-        var slice2 = split.slice(1, 2);
-        var slice3 = split.slice(2, 3);
-
-        if (split.length == 1) {
-            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22%7D`;
-        } else if (split.length == 2 && isFinite(slice2.toString())) {
-            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice2}%22%7D`;
-        } else if (split.length == 2 && isNaN(slice2.toString())) {
-            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22%7D`;
-        } else if (split.length == 3 && isFinite(slice3.toString())) {
-            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice3}%22%7D`;
-        } else {
-            message.reply("Je commando voldoet niet aan de eisen van het commando.");
-            return;
-        }
         function httpGet(theUrl) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open("GET", theUrl, false); // false for synchronous request
@@ -45,8 +23,29 @@ class PlayerSearchCommand extends commando.Command {
             return JSON.parse(xmlHttp.responseText);
         }
 
-        let raritiesjson = httpGet(urlrarities);
-        let a = httpGet(url);
+        function playerTitle(versionid, titlename) {
+            switch (versionid.toString()) {
+                case "70-gold":
+                    var titlename = "Champions League TOTGS Rare";
+                    break;
+                case "32-gold":
+                    var titlename = "FUTMAS";
+                    break;
+                case "46-gold":
+                    var titlename = "Europa League Live Rare";
+                    break;
+                case "50-gold":
+                    var titlename = "Champions League Live Rare";
+                    break;
+                case "68-gold":
+                    var titlename = "Europa League TOTGS Rare";
+                    break;
+                case "85-gold":
+                    var titlename = "Headliner";
+                    break;
+            }
+            return titlename;
+        }
 
         function searchPlayer(playerid) {
             let idurl = "https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22id%22:%22" + playerid + `%22,%22quality%22:%22${quality}%22%7D`;
@@ -90,19 +89,19 @@ class PlayerSearchCommand extends commando.Command {
             const xbbinmessage4 = `**RPR**: ${xbprp}%`;
 
             if (searchbyid.items[0].position.toString() == "GK") {
-                var snl = "DUI";
-                var sch = 'BEH';
-                var pas = 'TRP';
+                var snl = "DIV";
+                var sch = 'HAN';
+                var pas = 'KIC';
                 var dri = 'REF';
-                var vrd = 'SNL';
+                var vrd = 'SPE';
                 var fys = 'POS';
             } else {
-                var snl = "SNL";
-                var sch = 'SCH';
+                var snl = "PAC";
+                var sch = 'SHO';
                 var pas = 'PAS';
                 var dri = 'DRI';
-                var vrd = 'VRD';
-                var fys = 'FYS';
+                var vrd = 'DEF';
+                var fys = 'PHY';
             }
 
             if (searchbyid.items[0].commonName !== '') {
@@ -114,40 +113,51 @@ class PlayerSearchCommand extends commando.Command {
             const position = searchbyid.items[0].position.toString();
             const author = `${fullname} - ${rating} ${position}`;
             var title1 = searchbyid.items[0].rarityId + "-" + searchbyid.items[0].quality;
-            var title = raritiesjson.dynamicRarities[title1].toString();
-            switch (title1.toString()) {
-                case "70-gold":
-                    var title = "Champions League TOTGS Rare";
-                    break;
-                case "32-gold":
-                    var title = "FUTMas-SBC";
-                    break;
-                case "46-gold":
-                    var title = "Europa League Live Rare";
-                    break;
-                case "50-gold":
-                    var title = "Champions League Live Rare";
-                    break;
-                case "68-gold":
-                    var title = "Europa League TOTGS Rare";
-                    break;
-
-            }
+            var title2 = raritiesjson.dynamicRarities[title1].toString();
+            var title = playerTitle(title1, title2);
             var height = searchbyid.items[0].height.toString().substring(0, 1) + "." + searchbyid.items[0].height.toString().substring(1, 4) + "m";
-            const description = `**${snl}**: ${searchbyid.items[0].attributes[0].value} **${sch}**: ${searchbyid.items[0].attributes[1].value} **${pas}**: ${searchbyid.items[0].attributes[2].value} **${dri}**: ${searchbyid.items[0].attributes[3].value} **${vrd}**: ${searchbyid.items[0].attributes[4].value} **${fys}**: ${searchbyid.items[0].attributes[5].value}\n**WT**: ${searchbyid.items[0].atkWorkRate.charAt(0)}/${searchbyid.items[0].defWorkRate.charAt(0)} **SM**: ${searchbyid.items[0].skillMoves}★ **ZB**: ${searchbyid.items[0].weakFoot}★\n:footprints: ${searchbyid.items[0].foot.charAt(0)} :straight_ruler: ${height} :scales:️ ${searchbyid.items[0].weight}kg :calendar_spiral: ${searchbyid.items[0].age}`;
+            const description = `**${snl}**: ${searchbyid.items[0].attributes[0].value} **${sch}**: ${searchbyid.items[0].attributes[1].value} **${pas}**: ${searchbyid.items[0].attributes[2].value} **${dri}**: ${searchbyid.items[0].attributes[3].value} **${vrd}**: ${searchbyid.items[0].attributes[4].value} **${fys}**: ${searchbyid.items[0].attributes[5].value}\n**WR**: ${searchbyid.items[0].atkWorkRate.charAt(0)}/${searchbyid.items[0].defWorkRate.charAt(0)} **SM**: ${searchbyid.items[0].skillMoves}★ **WF**: ${searchbyid.items[0].weakFoot}★\n:footprints: ${searchbyid.items[0].foot.charAt(0)} :straight_ruler: ${height} :scales:️ ${searchbyid.items[0].weight}kg :calendar_spiral: ${searchbyid.items[0].age}`;
             const embed = new Discord.RichEmbed()
                 .setColor(0x2FF37A)
                 .setThumbnail(searchbyid.items[0].headshot.imgUrl.toString())
                 .setAuthor(author, searchbyid.items[0].club.imageUrls.dark.small.toString())
                 .setTitle(title)
                 .setDescription(description)
-                .setFooter("FUT Searcher v.1.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
+                .setFooter("FUTBot v.1.0.2 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("Nation", searchbyid.items[0].nation.abbrName.toString(), true)
                 .addField("Club", `${searchbyid.items[0].club.name} (${searchbyid.items[0].league.abbrName})`, true)
                 .addField("PS", `**5 lowest BIN prices**\n${psbinmessage1}${psbinmessage2}${psbinmessage3}${psbinmessage4}\n\n**Changed since**\nComing soon...`, true)
                 .addField("XBOX", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Changed since**\nComing soon...`, true)
             message.reply("here is the requested player:", { embed });
         }
+
+        var quality = "0-bronze,0-gold,0-silver,1-bronze,1-silver,1-gold,3-bronze,3-silver,3-gold,5-gold,12-gold,21-gold,22-gold,24-gold,25-gold,32-gold,42-gold,43-gold,47-gold,48-gold,51-gold,63-gold,64-gold,71-gold,78-gold,83-gold,85-gold";
+
+        const filter = m => m.author.id === message.author.id;
+
+        var urlrarities = "https://www.easports.com/fifa/ultimate-team/api/fut/display";
+
+        var split = args.split(" ");
+        var slice = split.slice(0, 1);
+        var slice2 = split.slice(1, 2);
+        var slice3 = split.slice(2, 3);
+
+        if (split.length == 1) {
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22%7D`;
+        } else if (split.length == 2 && isFinite(slice2.toString())) {
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice2}%22%7D`;
+        } else if (split.length == 2 && isNaN(slice2.toString())) {
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22%7D`;
+        } else if (split.length == 3 && isFinite(slice3.toString())) {
+            var url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22name%22:%22${slice} ${slice2}%22,%22quality%22:%22${quality}%22,%22ovr%22:%22${slice3}%22%7D`;
+        } else {
+            message.reply("Je commando voldoet niet aan de eisen van het commando.");
+            return;
+        }
+
+        let raritiesjson = httpGet(urlrarities);
+        let a = httpGet(url);
+
         if (a.totalResults > 1) {
             var n = 20;
             var resultsPlayer = [];
@@ -162,25 +172,8 @@ class PlayerSearchCommand extends commando.Command {
                     var playerName = a.items[i].firstName + " " + a.items[i].lastName;
                 }
                 var version1 = a.items[i].rarityId + "-" + a.items[i].quality;
-                var version = raritiesjson.dynamicRarities[version1];
-                switch (version1.toString()) {
-                    case "70-gold":
-                        var version = "Champions League TOTGS Rare";
-                        break;
-                    case "32-gold":
-                        var version = "FUTMas-SBC";
-                        break;
-                    case "46-gold":
-                        var version = "Europa League Live Rare";
-                        break;
-                    case "50-gold":
-                        var version = "Champions League Live Rare";
-                        break;
-                    case "68-gold":
-                        var version = "Europa League TOTGS Rare";
-                        break;
-    
-                }
+                var version2 = raritiesjson.dynamicRarities[version1];
+                var version = playerTitle(version1, version2);
                 resultsPlayer.push({ choice: j, name: playerName, ovr: a.items[i].rating, version: version, playerid: a.items[i].id });
                 table.addRow(j, playerName, a.items[i].rating, version);
             }
@@ -189,35 +182,36 @@ class PlayerSearchCommand extends commando.Command {
             table.setAlign(3, AsciiTable.LEFT);
             var datasend = "```" + table.toString() + "```";
             message.channel.send(datasend);
-            message.reply("make a choice by entering a number... This will expire within 15 seconds...\nType `cancel` to cancel the request.");
+            message.reply("make a choice by entering a number... This will expire within 25 seconds...\nType `cancel` to cancel the request.");
+            // #4479 
             message.channel.awaitMessages(filter, {
                 max: 1,
-                time: 15000
+                time: 25000
             }).then(collected => {
-                const number = collected.first().content;
+                const number = collected.first().content.toLowerCase();
                 if (number === 'cancel') {
                     return message.reply("Cancelled.");
-                } else if (1 <= number && number <= 20) {
+                } else if (1 <= number && number <= a.totalResults) {
                     for (var n = 0; n < resultsPlayer.length + 1; n++) {
                         if (n == number) {
                             var playerid = resultsPlayer[n - 1].playerid.toString();
                         }
                     }
                     searchPlayer(playerid);
+                } else {
+                    throw "Wrong message content. #4479";
                 }
             }).catch(err => {
-                message.reply("Cancelled, time expired...");
+                if (err === "Wrong message content. #4479") {
+                    message.reply("Message does not match the criteria, request cancelled...")
+                } else {
+                    message.reply("Cancelled, time expired...");
+                }
                 console.log(err);
             });
         } else if (a.totalResults == 1) {
             var playerid = a.items[0].id.toString();
             searchPlayer(playerid);
-        } else if (args == "") {
-            message.reply("the command can be used in the following way:\n```fut!player [playername] <Overall rating>```\nThe player name must be one word, overall rating is an option so it does not have to be.");
-        } else if (args == "help") {
-            message.reply("the command can be used in the following way:\n```fut!player [playername] <Overall rating>```\nThe player name must be one word, overall rating is an option so it does not have to be.");
-        } else if (args == "info") {
-            message.reply("the command can be used in the following way:\n```fut!player [playername] <Overall rating>```\nThe player name must be one word, overall rating is an option so it does not have to be.");
         } else {
             message.reply("No player(s) found.");
         }

@@ -45,7 +45,7 @@ class CheapestSearchCommand extends commando.Command {
                 .setAuthor(author)
                 .setURL(url)
                 .setDescription(description)
-                .setFooter("FUT Searcher v.1.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
+                .setFooter("FUTBot v.1.0.2 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("PS", field1, true)
                 .addField("XBOX", field2, true)
             message.reply("here is your requested list:", { embed });
