@@ -2,6 +2,8 @@ const commando = require('discord.js-commando');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const AsciiTable = require('ascii-table');
 const Discord = require('discord.js');
+const moment = require('moment');
+const Date = require('date.js');
 
 class PlayerSearchPCCommand extends commando.Command {
     constructor(client) {
@@ -47,6 +49,10 @@ class PlayerSearchPCCommand extends commando.Command {
             return titlename;
         }
 
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function searchPlayer(playerid) {
             let idurl = "https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22id%22:%22" + playerid + `%22,%22quality%22:%22${quality}%22%7D`;
             let searchbyid = httpGet(idurl);
@@ -85,6 +91,137 @@ class PlayerSearchPCCommand extends commando.Command {
                 var fys = 'PHY';
             }
 
+            var playerhistorytodayurl = "https://www.futbin.com/19/playerGraph?type=today&year=19&player=" + playerid;
+            var playerhistoryyesterdayurl = "https://www.futbin.com/19/playerGraph?type=yesterday&year=19&player=" + playerid;
+            var playerhistorydayesterdayurl = "https://www.futbin.com/19/playerGraph?type=da_yesterday&year=19&player=" + playerid;
+            var playerhistorydailyurl = "https://www.futbin.com/19/playerGraph?type=daily_graph&year=19&player=" + playerid;
+
+            var playerhistorytoday = httpGet(playerhistorytodayurl);
+            var playerhistoryyesterday = httpGet(playerhistoryyesterdayurl);
+            var playerhistorydayesterday = httpGet(playerhistorydayesterdayurl);
+            var playerhistorydaily = httpGet(playerhistorydailyurl);
+
+            var lasthour = `${moment().format("MM/DD/YYYY HH")}:00:00`;
+            var date = new Date(lasthour);
+            var lasthourgmt = date.getTime() - 3600000;
+            var threehourgmt = lasthourgmt - 10800000;
+            var sixhourgmt = threehourgmt - 10800000;
+            var twelvehourgmt = sixhourgmt - 21600000;
+            var yesterdaygmt = twelvehourgmt - 43200000;
+            var twodaysgmt = `${moment().format("MM/DD/YYYY")} 00:00:00`;
+            var date1 = new Date(twodaysgmt);
+            var twodaysgmt = date1.getTime() - 169200000;
+            var oneweekgmt = date1.getTime() - 601200000;
+
+            for (var i = 0; i < playerhistorytoday.pc.length; i++) {
+                if (playerhistorytoday.pc[i].includes(lasthourgmt)) {
+                    var pclasthourprice = numberWithCommas(playerhistorytoday.pc[i][1]);
+                    break;
+                } else {
+                    var pclasthourprice = "Unknown";
+                }
+            }
+
+            if (pclasthourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.pc.length; i++) {
+                    if (playerhistoryyesterday.pc[i].includes(lasthourgmt)) {
+                        var pclasthourprice = numberWithCommas(playerhistoryyesterday.pc[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.pc.length; i++) {
+                if (playerhistorytoday.pc[i].includes(threehourgmt)) {
+                    var pcthreehourprice = numberWithCommas(playerhistorytoday.pc[i][1]);
+                    break;
+                } else {
+                    var pcthreehourprice = "Unknown";
+                }
+            }
+
+            if (pcthreehourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.pc.length; i++) {
+                    if (playerhistoryyesterday.pc[i].includes(threehourgmt)) {
+                        var pcthreehourprice = numberWithCommas(playerhistoryyesterday.pc[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.pc.length; i++) {
+                if (playerhistorytoday.pc[i].includes(sixhourgmt)) {
+                    var pcsixhourprice = numberWithCommas(playerhistorytoday.pc[i][1]);
+                    break;
+                } else {
+                    var pcsixhourprice = "Unknown";
+                }
+            }
+
+            if (pcsixhourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.pc.length; i++) {
+                    if (playerhistoryyesterday.pc[i].includes(sixhourgmt)) {
+                        var pcsixhourprice = numberWithCommas(playerhistoryyesterday.pc[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.pc.length; i++) {
+                if (playerhistorytoday.pc[i].includes(twelvehourgmt)) {
+                    var pctwelvehourprice = numberWithCommas(playerhistorytoday.pc[i][1]);
+                    break;
+                } else {
+                    var pctwelvehourprice = "Unknown";
+                }
+            }
+
+            if (pctwelvehourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.pc.length; i++) {
+                    if (playerhistoryyesterday.pc[i].includes(twelvehourgmt)) {
+                        var pctwelvehourprice = numberWithCommas(playerhistoryyesterday.pc[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistoryyesterday.pc.length; i++) {
+                if (playerhistoryyesterday.pc[i].includes(yesterdaygmt)) {
+                    var pcyesterdayhourprice = numberWithCommas(playerhistoryyesterday.pc[i][1]);
+                    break;
+                } else {
+                    var pcyesterdayhourprice = "Unknown";
+                }
+            }
+
+            if (pcyesterdayhourprice === "Unknown") {
+                for (var i = 0; i < playerhistorydayesterday.pc.length; i++) {
+                    if (playerhistorydayesterday.pc[i].includes(yesterdaygmt)) {
+                        var pcyesterdayhourprice = numberWithCommas(playerhistorydayesterday.pc[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorydaily.pc.length; i++) {
+                if (playerhistorydaily.pc[i].includes(twodaysgmt)) {
+                    var pctwodayshourprice = numberWithCommas(playerhistorydaily.pc[i][1]);
+                    break;
+                } else {
+                    var pctwodayshourprice = "Unknown";
+                }
+            }
+
+            for (var i = 0; i < playerhistorydaily.pc.length; i++) {
+                if (playerhistorydaily.pc[i].includes(oneweekgmt)) {
+                    var pconeweekhourprice = numberWithCommas(playerhistorydaily.pc[i][1]);
+                    break;
+                } else {
+                    var pconeweekhourprice = "Unknown";
+                }
+            }
+
+
             if (searchbyid.items[0].commonName !== '') {
                 var fullname = `${searchbyid.items[0].commonName.toString()}`;
             } else {
@@ -98,6 +235,7 @@ class PlayerSearchPCCommand extends commando.Command {
             var title = playerTitle(title1, title2);
             var height = searchbyid.items[0].height.toString().substring(0, 1) + "." + searchbyid.items[0].height.toString().substring(1, 4) + "m";
             const description = `**${snl}**: ${searchbyid.items[0].attributes[0].value} **${sch}**: ${searchbyid.items[0].attributes[1].value} **${pas}**: ${searchbyid.items[0].attributes[2].value} **${dri}**: ${searchbyid.items[0].attributes[3].value} **${vrd}**: ${searchbyid.items[0].attributes[4].value} **${fys}**: ${searchbyid.items[0].attributes[5].value}\n**WR**: ${searchbyid.items[0].atkWorkRate.charAt(0)}/${searchbyid.items[0].defWorkRate.charAt(0)} **SM**: ${searchbyid.items[0].skillMoves}★ **WF**: ${searchbyid.items[0].weakFoot}★\n:footprints: ${searchbyid.items[0].foot.charAt(0)} :straight_ruler: ${height} :scales:️ ${searchbyid.items[0].weight}kg :calendar_spiral: ${searchbyid.items[0].age}`;
+            const pcpricehistory = `1 hour ago: ${pclasthourprice}\n3 hours ago: ${pcthreehourprice}\n6 hours ago: ${pcsixhourprice}\n12 hours ago: ${pctwelvehourprice}\n1 day ago: ${pcyesterdayhourprice}\n2 days ago: ${pctwodayshourprice}\n1 week ago: ${pconeweekhourprice}`;
             const embed = new Discord.RichEmbed()
                 .setColor(0x2FF37A)
                 .setThumbnail(searchbyid.items[0].headshot.imgUrl.toString())
@@ -107,7 +245,7 @@ class PlayerSearchPCCommand extends commando.Command {
                 .setFooter("FUTBot v.1.0.2 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("Nation", searchbyid.items[0].nation.abbrName.toString(), true)
                 .addField("Club", `${searchbyid.items[0].club.name} (${searchbyid.items[0].league.abbrName})`, true)
-                .addField("PC", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Changed since**\nComing soon...`)
+                .addField("PC", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Price history**\n${pcpricehistory}\n`)
             message.reply("here is the requested player:", { embed });
         }
 

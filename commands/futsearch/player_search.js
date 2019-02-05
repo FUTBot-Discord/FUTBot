@@ -2,6 +2,8 @@ const commando = require('discord.js-commando');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const AsciiTable = require('ascii-table');
 const Discord = require('discord.js');
+const moment = require('moment');
+const Date = require('date.js');
 
 class PlayerSearchCommand extends commando.Command {
     constructor(client) {
@@ -45,6 +47,10 @@ class PlayerSearchCommand extends commando.Command {
                     break;
             }
             return titlename;
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
         function searchPlayer(playerid) {
@@ -104,6 +110,246 @@ class PlayerSearchCommand extends commando.Command {
                 var fys = 'PHY';
             }
 
+            var playerhistorytodayurl = "https://www.futbin.com/19/playerGraph?type=today&year=19&player=" + playerid;
+            var playerhistoryyesterdayurl = "https://www.futbin.com/19/playerGraph?type=yesterday&year=19&player=" + playerid;
+            var playerhistorydayesterdayurl = "https://www.futbin.com/19/playerGraph?type=da_yesterday&year=19&player=" + playerid;
+            var playerhistorydailyurl = "https://www.futbin.com/19/playerGraph?type=daily_graph&year=19&player=" + playerid;
+
+            var playerhistorytoday = httpGet(playerhistorytodayurl);
+            var playerhistoryyesterday = httpGet(playerhistoryyesterdayurl);
+            var playerhistorydayesterday = httpGet(playerhistorydayesterdayurl);
+            var playerhistorydaily = httpGet(playerhistorydailyurl);
+
+            var lasthour = `${moment().format("MM/DD/YYYY HH")}:00:00`;
+            var date = new Date(lasthour);
+            var lasthourgmt = date.getTime() - 3600000;
+            var threehourgmt = lasthourgmt - 10800000;
+            var sixhourgmt = threehourgmt - 10800000;
+            var twelvehourgmt = sixhourgmt - 21600000;
+            var yesterdaygmt = twelvehourgmt - 43200000;
+            var twodaysgmt = `${moment().format("MM/DD/YYYY")} 00:00:00`;
+            var date1 = new Date(twodaysgmt);
+            var twodaysgmt = date1.getTime() - 169200000;
+            var oneweekgmt = date1.getTime() - 601200000;
+
+            for (var i = 0; i < playerhistorytoday.ps.length; i++) {
+                if (playerhistorytoday.ps[i].includes(lasthourgmt)) {
+                    var pslasthourprice = numberWithCommas(playerhistorytoday.ps[i][1]);
+                    break;
+                } else {
+                    var pslasthourprice = "Unknown";
+                }
+            }
+
+            if (pslasthourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.ps.length; i++) {
+                    if (playerhistoryyesterday.ps[i].includes(lasthourgmt)) {
+                        var pslasthourprice = numberWithCommas(playerhistoryyesterday.ps[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.ps.length; i++) {
+                if (playerhistorytoday.ps[i].includes(threehourgmt)) {
+                    var psthreehourprice = numberWithCommas(playerhistorytoday.ps[i][1]);
+                    break;
+                } else {
+                    var psthreehourprice = "Unknown";
+                }
+            }
+
+            if (psthreehourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.ps.length; i++) {
+                    if (playerhistoryyesterday.ps[i].includes(threehourgmt)) {
+                        var psthreehourprice = numberWithCommas(playerhistoryyesterday.ps[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.ps.length; i++) {
+                if (playerhistorytoday.ps[i].includes(sixhourgmt)) {
+                    var pssixhourprice = numberWithCommas(playerhistorytoday.ps[i][1]);
+                    break;
+                } else {
+                    var pssixhourprice = "Unknown";
+                }
+            }
+
+            if (pssixhourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.ps.length; i++) {
+                    if (playerhistoryyesterday.ps[i].includes(sixhourgmt)) {
+                        var pssixhourprice = numberWithCommas(playerhistoryyesterday.ps[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.ps.length; i++) {
+                if (playerhistorytoday.ps[i].includes(twelvehourgmt)) {
+                    var pstwelvehourprice = numberWithCommas(playerhistorytoday.ps[i][1]);
+                    break;
+                } else {
+                    var pstwelvehourprice = "Unknown";
+                }
+            }
+
+            if (pstwelvehourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.ps.length; i++) {
+                    if (playerhistoryyesterday.ps[i].includes(twelvehourgmt)) {
+                        var pstwelvehourprice = numberWithCommas(playerhistoryyesterday.ps[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistoryyesterday.ps.length; i++) {
+                if (playerhistoryyesterday.ps[i].includes(yesterdaygmt)) {
+                    var psyesterdayhourprice = numberWithCommas(playerhistoryyesterday.ps[i][1]);
+                    break;
+                } else {
+                    var psyesterdayhourprice = "Unknown";
+                }
+            }
+
+            if (psyesterdayhourprice === "Unknown") {
+                for (var i = 0; i < playerhistorydayesterday.ps.length; i++) {
+                    if (playerhistorydayesterday.ps[i].includes(yesterdaygmt)) {
+                        var psyesterdayhourprice = numberWithCommas(playerhistorydayesterday.ps[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorydaily.ps.length; i++) {
+                if (playerhistorydaily.ps[i].includes(twodaysgmt)) {
+                    var pstwodayshourprice = numberWithCommas(playerhistorydaily.ps[i][1]);
+                    break;
+                } else {
+                    var pstwodayshourprice = "Unknown";
+                }
+            }
+
+            for (var i = 0; i < playerhistorydaily.ps.length; i++) {
+                if (playerhistorydaily.ps[i].includes(oneweekgmt)) {
+                    var psoneweekhourprice = numberWithCommas(playerhistorydaily.ps[i][1]);
+                    break;
+                } else {
+                    var psoneweekhourprice = "Unknown";
+                }
+            }
+
+            // ============================================================================================
+
+            for (var i = 0; i < playerhistorytoday.xbox.length; i++) {
+                if (playerhistorytoday.xbox[i].includes(lasthourgmt)) {
+                    var xboxlasthourprice = numberWithCommas(playerhistorytoday.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxlasthourprice = "Unknown";
+                }
+            }
+
+            if (xboxlasthourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.xbox.length; i++) {
+                    if (playerhistoryyesterday.xbox[i].includes(lasthourgmt)) {
+                        var xboxlasthourprice = numberWithCommas(playerhistoryyesterday.xbox[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.xbox.length; i++) {
+                if (playerhistorytoday.xbox[i].includes(threehourgmt)) {
+                    var xboxthreehourprice = numberWithCommas(playerhistorytoday.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxthreehourprice = "Unknown";
+                }
+            }
+
+            if (xboxthreehourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.xbox.length; i++) {
+                    if (playerhistoryyesterday.xbox[i].includes(threehourgmt)) {
+                        var xboxthreehourprice = numberWithCommas(playerhistoryyesterday.xbox[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.xbox.length; i++) {
+                if (playerhistorytoday.xbox[i].includes(sixhourgmt)) {
+                    var xboxsixhourprice = numberWithCommas(playerhistorytoday.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxsixhourprice = "Unknown";
+                }
+            }
+
+            if (xboxsixhourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.xbox.length; i++) {
+                    if (playerhistoryyesterday.xbox[i].includes(sixhourgmt)) {
+                        var xboxsixhourprice = numberWithCommas(playerhistoryyesterday.xbox[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorytoday.xbox.length; i++) {
+                if (playerhistorytoday.xbox[i].includes(twelvehourgmt)) {
+                    var xboxtwelvehourprice = numberWithCommas(playerhistorytoday.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxtwelvehourprice = "Unknown";
+                }
+            }
+
+            if (xboxtwelvehourprice === "Unknown") {
+                for (var i = 0; i < playerhistoryyesterday.xbox.length; i++) {
+                    if (playerhistoryyesterday.xbox[i].includes(twelvehourgmt)) {
+                        var xboxtwelvehourprice = numberWithCommas(playerhistoryyesterday.xbox[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistoryyesterday.xbox.length; i++) {
+                if (playerhistoryyesterday.xbox[i].includes(yesterdaygmt)) {
+                    var xboxyesterdayhourprice = numberWithCommas(playerhistoryyesterday.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxyesterdayhourprice = "Unknown";
+                }
+            }
+
+            if (xboxyesterdayhourprice === "Unknown") {
+                for (var i = 0; i < playerhistorydayesterday.xbox.length; i++) {
+                    if (playerhistorydayesterday.xbox[i].includes(yesterdaygmt)) {
+                        var xboxyesterdayhourprice = numberWithCommas(playerhistorydayesterday.xbox[i][1]);
+                        break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < playerhistorydaily.xbox.length; i++) {
+                if (playerhistorydaily.xbox[i].includes(twodaysgmt)) {
+                    var xboxtwodayshourprice = numberWithCommas(playerhistorydaily.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxtwodayshourprice = "Unknown";
+                }
+            }
+
+            for (var i = 0; i < playerhistorydaily.xbox.length; i++) {
+                if (playerhistorydaily.xbox[i].includes(oneweekgmt)) {
+                    var xboxoneweekhourprice = numberWithCommas(playerhistorydaily.xbox[i][1]);
+                    break;
+                } else {
+                    var xboxoneweekhourprice = "Unknown";
+                }
+            }
+
             if (searchbyid.items[0].commonName !== '') {
                 var fullname = `${searchbyid.items[0].commonName.toString()}`;
             } else {
@@ -116,7 +362,9 @@ class PlayerSearchCommand extends commando.Command {
             var title2 = raritiesjson.dynamicRarities[title1].toString();
             var title = playerTitle(title1, title2);
             var height = searchbyid.items[0].height.toString().substring(0, 1) + "." + searchbyid.items[0].height.toString().substring(1, 4) + "m";
-            const description = `**${snl}**: ${searchbyid.items[0].attributes[0].value} **${sch}**: ${searchbyid.items[0].attributes[1].value} **${pas}**: ${searchbyid.items[0].attributes[2].value} **${dri}**: ${searchbyid.items[0].attributes[3].value} **${vrd}**: ${searchbyid.items[0].attributes[4].value} **${fys}**: ${searchbyid.items[0].attributes[5].value}\n**WR**: ${searchbyid.items[0].atkWorkRate.charAt(0)}/${searchbyid.items[0].defWorkRate.charAt(0)} **SM**: ${searchbyid.items[0].skillMoves}★ **WF**: ${searchbyid.items[0].weakFoot}★\n:footprints: ${searchbyid.items[0].foot.charAt(0)} :straight_ruler: ${height} :scales:️ ${searchbyid.items[0].weight}kg :calendar_spiral: ${searchbyid.items[0].age}`;
+            const description = `**${snl}**: ${searchbyid.items[0].attributes[0].value} **${sch}**: ${searchbyid.items[0].attributes[1].value} **${pas}**: ${searchbyid.items[0].attributes[2].value} **${dri}**: ${searchbyid.items[0].attributes[3].value} **${vrd}**: ${searchbyid.items[0].attributes[4].value} **${fys}**: ${searchbyid.items[0].attributes[5].value}\n**WR**: ${searchbyid.items[0].atkWorkRate.charAt(0)}/${searchbyid.items[0].defWorkRate.charAt(0)} **SM**: ${searchbyid.items[0].skillMoves}★ **WF**: ${searchbyid.items[0].weakFoot}★\n:footprints: ${searchbyid.items[0].foot.charAt(0)} :straight_ruler: ${height} :scales:️ ${searchbyid.items[0].weight}kg :calendar_spiral: ${searchbyid.items[0].age} years`;
+            const pspricehistory = `1 hour ago: ${pslasthourprice}\n3 hours ago: ${psthreehourprice}\n6 hours ago: ${pssixhourprice}\n12 hours ago: ${pstwelvehourprice}\n1 day ago: ${psyesterdayhourprice}\n2 days ago: ${pstwodayshourprice}\n1 week ago: ${psoneweekhourprice}`;
+            const xboxpricehistory = `1 hour ago: ${xboxlasthourprice}\n3 hours ago: ${xboxthreehourprice}\n6 hours ago: ${xboxsixhourprice}\n12 hours ago: ${xboxtwelvehourprice}\n1 day ago: ${xboxyesterdayhourprice}\n2 days ago: ${xboxtwodayshourprice}\n1 week ago: ${xboxoneweekhourprice}`;
             const embed = new Discord.RichEmbed()
                 .setColor(0x2FF37A)
                 .setThumbnail(searchbyid.items[0].headshot.imgUrl.toString())
@@ -126,8 +374,8 @@ class PlayerSearchCommand extends commando.Command {
                 .setFooter("FUTBot v.1.0.2 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("Nation", searchbyid.items[0].nation.abbrName.toString(), true)
                 .addField("Club", `${searchbyid.items[0].club.name} (${searchbyid.items[0].league.abbrName})`, true)
-                .addField("PS", `**5 lowest BIN prices**\n${psbinmessage1}${psbinmessage2}${psbinmessage3}${psbinmessage4}\n\n**Changed since**\nComing soon...`, true)
-                .addField("XBOX", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Changed since**\nComing soon...`, true)
+                .addField("PS", `**5 lowest BIN prices**\n${psbinmessage1}${psbinmessage2}${psbinmessage3}${psbinmessage4}\n\n**Price history**\n${pspricehistory}\n`, true)
+                .addField("XBOX", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Price history**\n${xboxpricehistory}\n`, true)
             message.reply("here is the requested player:", { embed });
         }
 
@@ -182,8 +430,8 @@ class PlayerSearchCommand extends commando.Command {
             table.setAlign(3, AsciiTable.LEFT);
             var datasend = "```" + table.toString() + "```";
             message.delete();
-            message.channel.send(datasend).then( m => m.delete(25000));
-            message.reply("make a choice by entering a number... This will expire within 25 seconds...\nType `cancel` to cancel the request.").then( m => m.delete(25000));
+            message.channel.send(datasend).then(m => m.delete(25000));
+            message.reply("make a choice by entering a number... This will expire within 25 seconds...\nType `cancel` to cancel the request.").then(m => m.delete(25000));
             // #4479 
             message.channel.awaitMessages(filter, {
                 max: 1,
