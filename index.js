@@ -16,6 +16,7 @@ client.registry
         ['fut_chem', 'Chem'],
         ['fut_position', 'Position'],
         ['fut_help', 'Help'],
+        ['fut_playersearchpc', 'FUT PlayerSearchPC'],
         ['fut_cheapest', 'FUT Cheapest']
     ])
     .registerCommandsIn(path.join(__dirname, 'commands'));

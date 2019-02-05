@@ -3,12 +3,12 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const AsciiTable = require('ascii-table');
 const Discord = require('discord.js');
 
-class PlayerSearchCommand extends commando.Command {
+class PlayerSearchPCCommand extends commando.Command {
     constructor(client) {
         super(client, {
-            name: 'player',
-            group: 'fut_playersearch',
-            memberName: 'player',
+            name: 'playerpc',
+            group: 'fut_playersearchpc',
+            memberName: 'playerpc',
             description: 'Zoekt een speler van de FUT market'
         });
     }
@@ -54,34 +54,15 @@ class PlayerSearchCommand extends commando.Command {
             let pricesurl = "https://www.futbin.com/19/playerPrices?player=" + playerid + "&_=1545322911135";
             let futbinprices = httpGet(pricesurl);
 
-            const psLCPrice1 = futbinprices[playerid].prices.ps.LCPrice.toString();
-            const psLCPrice2 = futbinprices[playerid].prices.ps.LCPrice2.toString();
-            const psLCPrice3 = futbinprices[playerid].prices.ps.LCPrice3.toString();
-            const psLCPrice4 = futbinprices[playerid].prices.ps.LCPrice4.toString();
-            const psLCPrice5 = futbinprices[playerid].prices.ps.LCPrice5.toString();
-            var psupdated = futbinprices[playerid].prices.ps.updated.toString();
-            const psminprice = futbinprices[playerid].prices.ps.MinPrice.toString();
-            const psmaxprice = futbinprices[playerid].prices.ps.MaxPrice.toString();
-            const psprp = futbinprices[playerid].prices.ps.PRP.toString();
-
-            const xbLCPrice1 = futbinprices[playerid].prices.xbox.LCPrice.toString();
-            const xbLCPrice2 = futbinprices[playerid].prices.xbox.LCPrice2.toString();
-            const xbLCPrice3 = futbinprices[playerid].prices.xbox.LCPrice3.toString();
-            const xbLCPrice4 = futbinprices[playerid].prices.xbox.LCPrice4.toString();
-            const xbLCPrice5 = futbinprices[playerid].prices.xbox.LCPrice5.toString();
-            const xbupdated = futbinprices[playerid].prices.xbox.updated.toString();
-            const xbminprice = futbinprices[playerid].prices.xbox.MinPrice.toString();
-            const xbmaxprice = futbinprices[playerid].prices.xbox.MaxPrice.toString();
-            const xbprp = futbinprices[playerid].prices.xbox.PRP.toString();
-
-            if (xbupdated == "Never") {
-                var psupdated = "Never";
-            }
-
-            const psbinmessage1 = `- ${psLCPrice1}\n- ${psLCPrice2}\n- ${psLCPrice3}\n- ${psLCPrice4}\n- ${psLCPrice5}\n`;
-            const psbinmessage2 = `**Updated**: ${psupdated}\n`;
-            const psbinmessage3 = `**Range**: ${psminprice} - ${psmaxprice}\n`;
-            const psbinmessage4 = `**RPR**: ${psprp}%`;
+            const xbLCPrice1 = futbinprices[playerid].prices.pc.LCPrice.toString();
+            const xbLCPrice2 = futbinprices[playerid].prices.pc.LCPrice2.toString();
+            const xbLCPrice3 = futbinprices[playerid].prices.pc.LCPrice3.toString();
+            const xbLCPrice4 = futbinprices[playerid].prices.pc.LCPrice4.toString();
+            const xbLCPrice5 = futbinprices[playerid].prices.pc.LCPrice5.toString();
+            const xbupdated = futbinprices[playerid].prices.pc.updated.toString();
+            const xbminprice = futbinprices[playerid].prices.pc.MinPrice.toString();
+            const xbmaxprice = futbinprices[playerid].prices.pc.MaxPrice.toString();
+            const xbprp = futbinprices[playerid].prices.pc.PRP.toString();
 
             const xbbinmessage1 = `- ${xbLCPrice1}\n- ${xbLCPrice2}\n- ${xbLCPrice3}\n- ${xbLCPrice4}\n- ${xbLCPrice5}\n`;
             const xbbinmessage2 = `**Updated**: ${xbupdated}\n`;
@@ -126,8 +107,7 @@ class PlayerSearchCommand extends commando.Command {
                 .setFooter("FUTBot v.1.0.2 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/fut1.jpg")
                 .addField("Nation", searchbyid.items[0].nation.abbrName.toString(), true)
                 .addField("Club", `${searchbyid.items[0].club.name} (${searchbyid.items[0].league.abbrName})`, true)
-                .addField("PS", `**5 lowest BIN prices**\n${psbinmessage1}${psbinmessage2}${psbinmessage3}${psbinmessage4}\n\n**Changed since**\nComing soon...`, true)
-                .addField("XBOX", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Changed since**\nComing soon...`, true)
+                .addField("PC", `**5 lowest BIN prices**\n${xbbinmessage1}${xbbinmessage2}${xbbinmessage3}${xbbinmessage4}\n\n**Changed since**\nComing soon...`)
             message.reply("here is the requested player:", { embed });
         }
 
@@ -184,7 +164,7 @@ class PlayerSearchCommand extends commando.Command {
             message.delete();
             message.channel.send(datasend).then( m => m.delete(25000));
             message.reply("make a choice by entering a number... This will expire within 25 seconds...\nType `cancel` to cancel the request.").then( m => m.delete(25000));
-            // #4479 
+            // #4480
             message.channel.awaitMessages(filter, {
                 max: 1,
                 time: 25000
@@ -201,10 +181,10 @@ class PlayerSearchCommand extends commando.Command {
                     collected.first().delete();
                     searchPlayer(playerid);
                 } else {
-                    throw "Wrong message content. #4479";
+                    throw "Wrong message content. #4480";
                 }
             }).catch(err => {
-                if (err === "Wrong message content. #4479") {
+                if (err === "Wrong message content. #4480") {
                     message.reply("Message does not match the criteria, request cancelled...")
                 } else {
                     message.reply("Cancelled, time expired...");
@@ -221,4 +201,4 @@ class PlayerSearchCommand extends commando.Command {
     }
 }
 
-module.exports = PlayerSearchCommand;
+module.exports = PlayerSearchPCCommand;
