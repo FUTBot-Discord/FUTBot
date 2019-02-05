@@ -123,7 +123,7 @@ class PlayerSearchCommand extends commando.Command {
             var lasthour = `${moment().format("MM/DD/YYYY HH")}:00:00`;
             var date = new Date(lasthour);
             var lasthourgmt = date.getTime() - 3600000;
-            var threehourgmt = lasthourgmt - 10800000;
+            var threehourgmt = lasthourgmt - 7200000;
             var sixhourgmt = threehourgmt - 10800000;
             var twelvehourgmt = sixhourgmt - 21600000;
             var yesterdaygmt = twelvehourgmt - 43200000;
