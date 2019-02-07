@@ -5,8 +5,8 @@ const client = new Commando.Client({
 });
 const path = require('path');
 var CONFIG = require('./config.json');
-//const DBL = require("dblapi.js");
-//const dbl = new DBL(CONFIG.dbl, client);
+const DBL = require("dblapi.js");
+const dbl = new DBL(CONFIG.dbl, client);
 
 client.login(CONFIG.token);
 
@@ -21,8 +21,18 @@ client.registry
     ])
     .registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.on('ready', function () {
-    console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guild(s).`);
+client.on('ready', async function () {
+    let count = 0;
+    await client.guilds.forEach((guild) => {
+        guild.fetchMembers().then(g => {
+            g.members.forEach((member) => {
+                count++;
+            });
+        });
+    });
+    await setTimeout(() => {
+	    console.log(`Bot has started, with ${count} users, in ${client.channels.size} channels of ${client.guilds.size} guild(s).`);
+    }, 6000);
     client.user.setActivity(`${client.guilds.size} server(s)`, { type: 'WATCHING' });
     setInterval(() => {
         //dbl.postStats(client.guilds.size);
