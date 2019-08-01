@@ -1,4 +1,12 @@
 {
-    "token": "NTM1MDM2NjkxOTQ2NDA1ODkw.DzoDsg.2X-GqtWabSsWqbG58EuGc9L-G8U",
-    "dbl": "token"
+    "general": {
+        "shards": 1,
+        "token": "NTM1MDM2NjkxOTQ2NDA1ODkw.XUMAvA.p0kEd_OH--ejwxJmRAo8HraI220",
+        "respawn": true
+    },
+    "rethinkdb": {
+        "host": "localhost",
+        "port": 28015,
+        "db": "futbot"
+    }
 }

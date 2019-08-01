@@ -1,33 +1,20 @@
 {
-  "name": "discordbot",
+  "name": "futbot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "enmap": "^5.1.0",
+    "fs": "0.0.1-security",
+    "rethinkdb": "^2.3.3",
+    "rethinkdb-pool": "^1.1.0",
+    "util": "^0.12.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@jose.donas/web-scraper": "^1.4.3",
-    "ascii-table": "0.0.9",
-    "date.js": "^0.3.3",
-    "dblapi.js": "^2.3.0",
-    "discord.js": "^11.4.2",
-    "discord.js-commando": "^0.10.0",
-    "grabbi": "^0.1.3",
-    "html-entities": "^1.2.1",
-    "html-metadata": "^1.7.0",
-    "m3u8stream": "^0.6.2",
-    "miniget": "^1.5.1",
-    "moment": "^2.24.0",
-    "node-gyp": "^3.8.0",
-    "opusscript": "0.0.6",
-    "page-scraper": "^2.0.5",
-    "rebuild": "^0.1.2",
-    "scrape-it": "^5.1.1",
-    "tabletojson": "^1.0.1",
-    "text-table": "^0.2.0",
-    "xmlhttprequest": "^1.8.0"
-  }
+  "license": "ISC"
 }
