@@ -7,6 +7,8 @@
     "discord.js": "^11.5.1",
     "enmap": "^5.1.0",
     "fs": "0.0.1-security",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "rethinkdb": "^2.3.3",
     "rethinkdb-pool": "^1.1.0",
     "util": "^0.12.1"
