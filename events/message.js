@@ -12,7 +12,7 @@ module.exports = async (client, message) => {
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    if (command === prefix) return message.channel.send(`Use the command \`${prefix}help\` to see all commands.`);
+    if (!command) return message.channel.send(`Use the command \`${prefix}help\` to see all commands.`);
 
     const cmd = client.commands.get(command);
 
