@@ -7,5 +7,4 @@ const pool = Pool(r, config.rethinkdb);
 
 pool.run = util.promisify(pool.run);
 
-
 module.exports = pool;

@@ -4,7 +4,7 @@ const pool = require("../functions/rethinkdb");
 module.exports = async (client, message) => {
     if (message.author.bot) return;
 
-    const prefix = await getPrefix(message.guild.id) ? await getPrefix(message.guild.id) : "fut!";
+    const prefix = await fetchPrefix(message.guild.id);
 
     if (message.content.startsWith(`<@${client.user.id}>`)) return message.channel.send(`The current prefix is: \`${prefix}\`.`);
     if (!message.content.startsWith(prefix)) return;
@@ -21,7 +21,8 @@ module.exports = async (client, message) => {
     cmd.run(client, message, args);
 }
 
-async function getPrefix (guildId) {
+async function fetchPrefix (guildId) {
     const d = await pool.run(r.table("prefix").get(guildId));
+    if (d === null) return "fut!";
     return d.prefix;
 }

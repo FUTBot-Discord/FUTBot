@@ -37,9 +37,8 @@ function regexCheck(prefix) {
 
 async function getPrefix (guildId) {
     const d = await pool.run(r.table("prefix").get(guildId));
-    var prefix = "fut!"
-    if (d.prefix) prefix = d.prefix;
-    return prefix;
+    if (d === null) return "fut!";
+    return d.prefix;
 }
 
 function createRow (guildId, prefix) {

@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "ascii-table": "0.0.9",
     "discord.js": "^11.5.1",
     "enmap": "^5.1.0",
     "fs": "0.0.1-security",
