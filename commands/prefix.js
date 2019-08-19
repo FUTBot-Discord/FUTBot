@@ -10,7 +10,7 @@ exports.run = async (client, message, args) => {
     const firstArgument = args[0];
 
     if (firstArgument !== "show" && firstArgument !== "change") return channel.send(`Use one of the arguments. The available arguments are: \`show\` and \`change\`.`);
-    if (firstArgument === "show") return channel.send(`The prefix this guild is using is as followed: \`${await getPrefix(guildId)}\`.`);
+    if (firstArgument === "show") return channel.send(`The prefix this guild is using is as followed: \`${await fetchPrefix(guildId)}\`.`);
 
     const requestedPrefix = args[1];
 
@@ -35,7 +35,7 @@ function regexCheck(prefix) {
     return (regex.exec(prefix) ? true : false);
 }
 
-async function getPrefix (guildId) {
+async function fetchPrefix (guildId) {
     const d = await pool.run(r.table("prefix").get(guildId));
     if (d === null) return "fut!";
     return d.prefix;
