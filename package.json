@@ -12,6 +12,7 @@
     "request-promise": "^4.2.4",
     "rethinkdb": "^2.3.3",
     "rethinkdb-pool": "^1.1.0",
+    "uniqid": "^5.0.3",
     "util": "^0.12.1"
   },
   "devDependencies": {},
