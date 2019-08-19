@@ -4,7 +4,7 @@ const pool = require("../functions/rethinkdb");
 const AsciiTable = require('ascii-table');
 const uniqid = require('uniqid');
 const Discord = require("discord.js");
-const embed = new Discord.RichEmbed();
+const moment = require('moment');
 
 exports.run = async (client, message, args) => {
     let url;
@@ -95,33 +95,278 @@ exports.run = async (client, message, args) => {
 
     const priceHistory = await makeObjPriceHistory(playerData.id);
 
+    const embed = await fillInEmbed(playerData, priceHistory);
 
+    return channel.send(embed);
 
 };
 
-function fillInEmbed (playerData) {
+async function fillInEmbed(playerData, priceHistory) {
+    const embed = new Discord.RichEmbed();
     const fullName = playerData.commonName ? playerData.commonName : `${playerData.firstName} ${playerData.lastName}`;
     const ratingNames = makeArrRatings(playerData.position);
-    const description;
-
-    for (i = 0; i < ratingNames.length; i++) {
-        
-    }
 
     embed.setColor(0x2FF37A);
     embed.setThumbnail(playerData.headshot);
-    embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`);
-    embed.setTitle(playerData.rarity)
-    embed.setDescription(```**${ratingNames[0]}
-     
-    ```);
-}
+    embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`, playerData.club.logo);
+    embed.setTitle(await getRarityName(playerData.rarity));
+    embed.setDescription(`**${ratingNames[0]}**: ${playerData.ratings.pac} **${ratingNames[1]}**: ${playerData.ratings.sho} **${ratingNames[2]}**: ${playerData.ratings.pas} **${ratingNames[3]}**: ${playerData.ratings.dri} **${ratingNames[4]}**: ${playerData.ratings.def} **${ratingNames[5]}**: ${playerData.ratings.phy}`);
+    embed.setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg");
+    embed.addField("Nation", playerData.nationName, true);
+    embed.addField("Club", `${playerData.club.name} (${playerData.leagueName})`, true);
+
+    let date = new Date(`${moment().format("MM/DD/YYYY HH")}:00:00`);
+    const lastHourGMT = date.getTime() - 3600000;
+    const lastThreeHourGMT = lastHourGMT - 7200000;
+    const lastSixHourGMT = lastThreeHourGMT - 10800000;
+    const lastTwelveHourGMT = lastSixHourGMT - 21600000;
+    const yesterdayGMT = lastTwelveHourGMT - 43200000;
+    date = new Date(`${moment().format("MM/DD/YYYY")} 00:00:00`);
+    const twoDaysGMT = date.getTime() - 165600000;
+    const oneWeekGMT = date.getTime() - 597600000;
+    const psPriceToday = priceHistory.today.ps;
+    const psPriceYesterday = priceHistory.yesterday.ps;
+    const psPriceDaYesterday = priceHistory.da_yesterday.ps;
+    const psPriceDailyGraph = priceHistory.daily_graph.ps;
+    const xboxPriceToday = priceHistory.today.xbox;
+    const xboxPriceYesterday = priceHistory.yesterday.xbox;
+    const xboxPriceDaYesterday = priceHistory.da_yesterday.xbox;
+    const xboxPriceDailyGraph = priceHistory.daily_graph.xbox;
+
+    for (i = 0; i < psPriceToday.length; i++) {
+        if (psPriceToday[i].includes(lastHourGMT)) {
+            var psLastHourPrice = numberWithCommas(psPriceToday[i][1]);
+            break;
+        } else {
+            var psLastHourPrice = "Unknown";
+        }
+    }
+
+    if (psLastHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastHourGMT)) {
+                var psLastHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceToday.length; i++) {
+        if (psPriceToday[i].includes(lastThreeHourGMT)) {
+            var psLastThreeHourPrice = numberWithCommas(psPriceToday[i][1]);
+            break;
+        } else {
+            var psLastThreeHourPrice = "Unknown";
+        }
+    }
+
+    if (psLastThreeHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastThreeHourGMT)) {
+                var psLastThreeHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceToday.length; i++) {
+        if (psPriceToday[i].includes(lastSixHourGMT)) {
+            var psLastSixHourPrice = numberWithCommas(psPriceToday[i][1]);
+            break;
+        } else {
+            var psLastSixHourPrice = "Unknown";
+        }
+    }
+
+    if (psLastSixHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterdaylength; i++) {
+            if (psPriceYesterday[i].includes(lastSixHourGMT)) {
+                var psLastSixHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceToday.length; i++) {
+        if (psPriceToday[i].includes(lastTwelveHourGMT)) {
+            var psLastTwelveHourPrice = numberWithCommas(psPriceToday[i][1]);
+            break;
+        } else {
+            var psLastTwelveHourPrice = "Unknown";
+        }
+    }
+
+    if (psLastTwelveHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastTwelveHourGMT)) {
+                var psLastTwelveHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceYesterday.length; i++) {
+        if (psPriceYesterday[i].includes(yesterdayGMT)) {
+            var psYesterdayPrice = numberWithCommas(psPriceYesterday[i][1]);
+            break;
+        } else {
+            var psYesterdayPrice = "Unknown";
+        }
+    }
+
+    if (psYesterdayPrice === "Unknown") {
+        for (i = 0; i < psPriceDaYesterday.length; i++) {
+            if (psPriceDaYesterday[i].includes(yesterdayGMT)) {
+                var psYesterdayPrice = numberWithCommas(psPriceDaYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceDailyGraph.length; i++) {
+        if (psPriceDailyGraph[i].includes(twoDaysGMT)) {
+            var psTwoDaysPrice = numberWithCommas(psPriceDailyGraph[i][1]);
+            break;
+        } else {
+            var psTwoDaysPrice = "Unknown";
+        }
+    }
+
+    for (i = 0; i < psPriceDailyGraph.length; i++) {
+        if (psPriceDailyGraph[i].includes(oneWeekGMT)) {
+            var psOneWeekPrice = numberWithCommas(psPriceDailyGraph[i][1]);
+            break;
+        } else {
+            var psOneWeekPrice = "Unknown";
+        }
+    }
+
+    // ============================================================================================
+
+    for (i = 0; i < xboxPriceToday.length; i++) {
+        if (xboxPriceToday[i].includes(lastHourGMT)) {
+            var xboxLastHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+            break;
+        } else {
+            var xboxLastHourPrice = "Unknown";
+        }
+    }
+
+    if (xboxLastHourPrice === "Unknown") {
+        for (i = 0; i < xboxPriceYesterday.length; i++) {
+            if (xboxPriceYesterday[i].includes(lastHourGMT)) {
+                var xboxLastHourPrice = numberWithCommas(xboxPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < xboxPriceToday.length; i++) {
+        if (xboxPriceToday[i].includes(lastThreeHourGMT)) {
+            var xboxLastThreeHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+            break;
+        } else {
+            var xboxLastThreeHourPrice = "Unknown";
+        }
+    }
+
+    if (xboxLastThreeHourPrice === "Unknown") {
+        for (i = 0; i < xboxPriceYesterday.length; i++) {
+            if (xboxPriceYesterday[i].includes(lastThreeHourGMT)) {
+                var xboxLastThreeHourPrice = numberWithCommas(xboxPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < xboxPriceToday.length; i++) {
+        if (xboxPriceToday[i].includes(lastSixHourGMT)) {
+            var xboxLastSixHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+            break;
+        } else {
+            var xboxLastSixHourPrice = "Unknown";
+        }
+    }
+
+    if (xboxLastSixHourPrice === "Unknown") {
+        for (i = 0; i < xboxPriceYesterdaylength; i++) {
+            if (xboxPriceYesterday[i].includes(lastSixHourGMT)) {
+                var xboxLastSixHourPrice = numberWithCommas(xboxPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < xboxPriceToday.length; i++) {
+        if (xboxPriceToday[i].includes(lastTwelveHourGMT)) {
+            var xboxLastTwelveHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+            break;
+        } else {
+            var xboxLastTwelveHourPrice = "Unknown";
+        }
+    }
+
+    if (xboxLastTwelveHourPrice === "Unknown") {
+        for (i = 0; i < xboxPriceYesterday.length; i++) {
+            if (xboxPriceYesterday[i].includes(lastTwelveHourGMT)) {
+                var xboxLastTwelveHourPrice = numberWithCommas(xboxPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < xboxPriceYesterday.length; i++) {
+        if (xboxPriceYesterday[i].includes(yesterdayGMT)) {
+            var xboxYesterdayPrice = numberWithCommas(xboxPriceYesterday[i][1]);
+            break;
+        } else {
+            var xboxYesterdayPrice = "Unknown";
+        }
+    }
+
+    if (xboxYesterdayPrice === "Unknown") {
+        for (i = 0; i < xboxPriceDaYesterday.length; i++) {
+            if (xboxPriceDaYesterday[i].includes(yesterdayGMT)) {
+                var xboxYesterdayPrice = numberWithCommas(xboxPriceDaYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < xboxPriceDailyGraph.length; i++) {
+        if (xboxPriceDailyGraph[i].includes(twoDaysGMT)) {
+            var xboxTwoDaysPrice = numberWithCommas(xboxPriceDailyGraph[i][1]);
+            break;
+        } else {
+            var xboxTwoDaysPrice = "Unknown";
+        }
+    }
+
+    for (i = 0; i < xboxPriceDailyGraph.length; i++) {
+        if (xboxPriceDailyGraph[i].includes(oneWeekGMT)) {
+            var xboxOneWeekPrice = numberWithCommas(xboxPriceDailyGraph[i][1]);
+            break;
+        } else {
+            var xboxOneWeekPrice = "Unknown";
+        }
+    }
+
+    const psPriceHistory = `1 hour ago: ${psLastHourPrice}\n3 hours ago: ${psLastThreeHourPrice}\n6 hours ago: ${psLastSixHourPrice}\n12 hours ago: ${psLastTwelveHourPrice}\n1 day ago: ${psYesterdayPrice}\n2 days ago: ${psTwoDaysPrice}\n1 week ago: ${psOneWeekPrice}`;
+    const xboxPriceHistory = `1 hour ago: ${xboxLastHourPrice}\n3 hours ago: ${xboxLastThreeHourPrice}\n6 hours ago: ${xboxLastSixHourPrice}\n12 hours ago: ${xboxLastTwelveHourPrice}\n1 day ago: ${xboxYesterdayPrice}\n2 days ago: ${xboxTwoDaysPrice}\n1 week ago: ${xboxOneWeekPrice}`;
+    const psPrices = playerData.prices.ps;
+    const xboxPrices = playerData.prices.xbox;
+
+    embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\n**RPR**: ${psPrices.PRP}%\n\n**Price history**\n${psPriceHistory}\n`, true);
+    embed.addField("XBOX", `**5 lowest BIN prices**\n- ${xboxPrices.LCPrice}\n- ${xboxPrices.LCPrice2}\n- ${xboxPrices.LCPrice3}\n- ${xboxPrices.LCPrice4}\n- ${xboxPrices.LCPrice5}\n**Updated**: ${xboxPrices.updated}\n**Range**: ${xboxPrices.MinPrice} - ${xboxPrices.MaxPrice}\n**RPR**: ${xboxPrices.PRP}%\n\n**Price history**\n${xboxPriceHistory}\n`, true);
+
+    return embed;
+};
 
 function checkGoalkeeper(position) {
     if (position === "GK") return true;
 
     return false;
-}
+};
 
 function makeArrRatings(position) {
     let arr;
@@ -147,7 +392,7 @@ function makeArrRatings(position) {
     }
 
     return arr;
-}
+};
 
 async function getRarityString() {
     const d = await pool.run(r.table("rarities"));
@@ -246,7 +491,7 @@ async function getPlayerPrices(playerId) {
     const res = await requestPlayerData(url);
 
     return res[playerId].prices;
-}
+};
 
 function makeOptionMenu(arr) {
     const t = new AsciiTable();
@@ -261,7 +506,7 @@ function makeOptionMenu(arr) {
     }
 
     return t;
-}
+};
 
 async function makeArrOfRemainingPlayers(data) {
     const arr = []
@@ -282,21 +527,21 @@ async function makeArrOfRemainingPlayers(data) {
     }
 
     return arr;
-}
+};
 
 async function getRarityName(rarity) {
     const d = await pool.run(r.table("rarities").get(rarity));
     if (!d) return false;
 
     return d.rarity;
-}
+};
 
 async function getPlayerPriceHistory(playerId, dateType) {
     const url = `https://www.futbin.com/19/playerGraph?type=${dateType}&year=19&player=${playerId}`;
     const res = await requestPlayerData(url);
 
     return res;
-}
+};
 
 async function makeObjPriceHistory(playerId) {
     const obj = {};
@@ -313,8 +558,8 @@ async function makeObjPriceHistory(playerId) {
     }
 
     return obj;
-}
+};
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+};
