@@ -17,7 +17,7 @@ setTimeout(() => {
         shardmanager.broadcastEval(`dbl.postStats(${results.reduce((prev, val) => prev + val, 0)});`);
     })
     .catch(console.error);
-}, 8000)
+}, 46000)
 
 
 setInterval(() => {
