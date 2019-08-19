@@ -33,13 +33,14 @@ exports.run = async (client, message, args) => {
             const prices = await getPlayerPrices(request.items[0].id);
             playerData = formatPlayerData(request, prices);
             console.log(playerData);
+            break;
         case request.totalResults > 1:
-            return makeOptionMenu(request);
+            const arr = await makeArrOfRemainingPlayers(request);
+            channel.send(await makeOptionMenu(arr));
+            break;
         default:
             console.log("error");
     }
-
-    console.log(playerData);
 
 };
 
@@ -57,7 +58,7 @@ async function getRarityString() {
 };
 
 async function getRandomProxy() {
-    let again = true;
+    var again = true;
     while (again) {
         var d = await pool.run(r.table("proxies"));
         var random = getRandomInt(0, d.length);
@@ -141,6 +142,45 @@ async function getPlayerPrices (playerId) {
     return res[playerId].prices;
 }
 
-function makeOptionMenu() {
+function makeOptionMenu(arr) {
+    const t = new AsciiTable();
+    t.setHeading('Choice', 'Name', 'OVR', 'Version');
+    t.setAlign(1, AsciiTable.LEFT);
+    t.setAlign(2, AsciiTable.CENTER);
+    t.setAlign(3, AsciiTable.LEFT);
 
+    for (i = 0; i < arr.length; i++) {
+        let c = arr[i];
+        t.addRow(c.choice, c.name, c.ovr, c.version);
+    }
+
+    return `\`\`\`${t}\`\`\``;
+}
+
+async function makeArrOfRemainingPlayers (data) {
+    const arr = []
+    const limit = 10;
+    let choiceNumber = 1;
+
+    for (var i = 0; i < data.items.length; i++, choiceNumber++) {
+        if (i == limit) break;
+
+        let playerName = `${data.items[i].firstName} ${data.items[i].lastName}`;
+
+        if (data.items[i].commonName) playerName = data.items[i].commonName;
+
+        let rarity = `${data.items[i].rarityId}-${data.items[i].quality}`;
+        rarity = await getRarityName(rarity) ? await getRarityName(rarity) : rarity;
+
+        arr.push({ choice: choiceNumber, name: playerName, ovr: data.items[i].rating, version: rarity, playerid: data.items[i].id });
+    }
+
+    return arr;
+}
+
+async function getRarityName (rarity) {
+    const d = await pool.run(r.table("rarities").get(rarity));
+    if (!d) return false;
+
+    return d.rarity;
 }
