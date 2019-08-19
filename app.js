@@ -10,9 +10,19 @@ const shardmanager = new Discord.ShardingManager('./bot.js', {
 shardmanager.spawn();
 
 shardmanager.fetchClientValues('guilds.size')
-  .then(results => {
-    console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-    shardmanager.broadcastEval(`client.user.setActivity(${results.reduce((prev, val) => prev + val, 0)}, { type: 'WATCHING' });`);
-    shardmanager.broadcastEval(`dbl.postStats(${results.reduce((prev, val) => prev + val, 0)});`);
-  })
-  .catch(console.error);
+    .then(results => {
+        console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
+        shardmanager.broadcastEval(`client.user.setActivity(${results.reduce((prev, val) => prev + val, 0)}, { type: 'WATCHING' });`);
+        shardmanager.broadcastEval(`dbl.postStats(${results.reduce((prev, val) => prev + val, 0)});`);
+    })
+    .catch(console.error);
+
+setInterval(() => {
+shardmanager.fetchClientValues('guilds.size')
+    .then(results => {
+        console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
+        shardmanager.broadcastEval(`client.user.setActivity(${results.reduce((prev, val) => prev + val, 0)}, { type: 'WATCHING' });`);
+        shardmanager.broadcastEval(`dbl.postStats(${results.reduce((prev, val) => prev + val, 0)});`);
+    })
+    .catch(console.error);
+}, 1800000)

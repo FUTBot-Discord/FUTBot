@@ -14,11 +14,6 @@ module.exports = (client) => {
     client.user.setActivity(`${client.guilds.size} servers`, { type: 'WATCHING' });
     dbl.postStats(client.guilds.size);
 
-    setInterval(() => {
-        dbl.postStats(client.guilds.size);
-        client.user.setActivity(`${client.guilds.size} servers`, { type: 'WATCHING' });
-    }, 1800000)
-
 
     console.log("====================")
 
