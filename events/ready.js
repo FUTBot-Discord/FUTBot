@@ -1,6 +1,5 @@
 const DBL = require("dblapi.js");
 
-
 module.exports = (client) => {
     let usercount = 0;
     const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUyMDY5NDYxMjA4MDMyODcwOSIsImJvdCI6dHJ1ZSwiaWF0IjoxNTQ3NjMyOTU2fQ.Q8mbinEz3TtHhK3rU5WVVou3qyiirBohq9WR2MsPWJc', client);
@@ -14,11 +13,6 @@ module.exports = (client) => {
 
     client.user.setActivity(`${client.guilds.size} servers`, { type: 'WATCHING' });
     dbl.postStats(client.guilds.size);
-
-    setInterval(() => {
-        dbl.postStats(client.guilds.size);
-        client.user.setActivity(`${client.guilds.size} servers`, { type: 'WATCHING' });
-    }, 1800000)
 
 
     console.log("====================")
