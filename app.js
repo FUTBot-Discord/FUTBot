@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('./config.json');
+const config = require('./config.js');
 
 const shardmanager = new Discord.ShardingManager('./bot.js', {
     totalShards: config.general.shards,
