@@ -1,14 +1,14 @@
 require('dotenv').config();
 
-const shards = parseInt(process.env.D_SHARDS, 10);
-const delay = parseInt(process.env.D_DELAY, 10)
+const amountShards = parseInt(process.env.D_SHARDS, 10);
+const amountDelay = parseInt(process.env.D_DELAY, 10);
 
 module.exports = {
     "general": {
-        "shards": shards,
+        "shards": amountShards,
         "token": process.env.D_TOKEN,
         "respawn": true,
-        "delay": delay
+        "delay": amountDelay
     },
     "rethinkdb": {
         "host": process.env.RDB_HOST,
