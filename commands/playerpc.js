@@ -157,8 +157,8 @@ async function fillInEmbed(playerData) {
     const lastTwelveHourGMT = lastSixHourGMT - 21600000;
     const yesterdayGMT = lastTwelveHourGMT - 43200000;
     date = new Date(`${moment().format("MM/DD/YYYY")} 00:00:00`);
-    const twoDaysGMT = date.getTime() - 165600000;
-    const oneWeekGMT = date.getTime() - 597600000;
+    const twoDaysGMT = date.getTime() - 172800000;
+    const oneWeekGMT = date.getTime() - 604800000;
     const psPriceToday = priceHistory.today.pc;
     const psPriceYesterday = priceHistory.yesterday.pc;
     const psPriceDaYesterday = priceHistory.da_yesterday.pc;

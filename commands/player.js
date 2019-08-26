@@ -151,15 +151,13 @@ async function fillInEmbed(playerData) {
 
     let date = new Date(`${moment().format("MM/DD/YYYY HH")}:00:00`);
     const lastHourGMT = date.getTime() - 3600000;
-    console.log(lastHourGMT);
     const lastThreeHourGMT = lastHourGMT - 7200000;
     const lastSixHourGMT = lastThreeHourGMT - 10800000;
     const lastTwelveHourGMT = lastSixHourGMT - 21600000;
     const yesterdayGMT = lastTwelveHourGMT - 43200000;
     date = new Date(`${moment().format("MM/DD/YYYY")} 00:00:00`);
-    const twoDaysGMT = date.getTime() - 165600000;
-    const oneWeekGMT = date.getTime() - 597600000;
-    console.log(twoDaysGMT + " " + oneWeekGMT);
+    const twoDaysGMT = date.getTime() - 172800000;
+    const oneWeekGMT = date.getTime() - 604800000;
     const psPriceToday = priceHistory.today.ps;
     const psPriceYesterday = priceHistory.yesterday.ps;
     const psPriceDaYesterday = priceHistory.da_yesterday.ps;
