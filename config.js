@@ -1,7 +1,10 @@
-require('dotenv').config()
+require('dotenv').config();
+
+const shardNumber = parseInt(process.env.D_SHARDS, 10);
+
 module.exports = {
     "general": {
-        "shards": 4,
+        "shards": shardNumber,
         "token": process.env.D_TOKEN,
         "respawn": true
     },

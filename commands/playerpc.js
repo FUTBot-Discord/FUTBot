@@ -290,7 +290,7 @@ async function fillInEmbed(playerData) {
     }
 
     const psPriceHistory = `1 hour ago: ${psLastHourPrice}\n3 hours ago: ${psLastThreeHourPrice}\n6 hours ago: ${psLastSixHourPrice}\n12 hours ago: ${psLastTwelveHourPrice}\n1 day ago: ${psYesterdayPrice}\n2 days ago: ${psTwoDaysPrice}\n1 week ago: ${psOneWeekPrice}`;
-    const psPrices = playerData.prices.ps;
+    const psPrices = playerData.prices.pc;
 
     embed.addField("PC", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\n**RPR**: ${psPrices.PRP}%\n\n**Price history**\n${psPriceHistory}\n`, true);
 
