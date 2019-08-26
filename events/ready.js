@@ -7,6 +7,8 @@ sub.on("error", (err) => {
 });
 
 module.exports = (client) => {
+    client.user.setActivity(`startup process, give me a moment plz ,_,`, { type: 'PLAYING' });
+
     let usercount = 0;
 
     for (i = 0; i < client.guilds.size; i++) {
