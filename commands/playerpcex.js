@@ -4,9 +4,10 @@ const pool = require("../functions/rethinkdb");
 const AsciiTable = require('ascii-table');
 const uniqid = require('uniqid');
 const Discord = require("discord.js");
+const moment = require('moment');
 const asyncRedis = require("async-redis");
 const { redis } = require('../config');
-redis.db = 3;
+redis.db = 2;
 const clientRedis = asyncRedis.createClient(redis);
 
 clientRedis.on("error", (err) => {
@@ -41,6 +42,7 @@ exports.run = async (client, message, args) => {
     const uid = uniqid();
     let playerData;
     let prices;
+    let priceHistory;
     let embed;
 
     switch (true) {
@@ -51,6 +53,8 @@ exports.run = async (client, message, args) => {
             } else {
                 prices = await getPlayerPrices(request.items[0].id);
                 playerData = await formatPlayerData(request, prices);
+                priceHistory = await makeObjPriceHistory(playerData.id);
+                playerData.priceHistory = priceHistory;
                 await clientRedis.setex(`${playerData.id}`, 300, JSON.stringify(playerData))
             }
 
@@ -115,6 +119,8 @@ exports.run = async (client, message, args) => {
             } else {
                 prices = await getPlayerPrices(playerIdTemp.playerId);
                 playerData = await getPlayerDataById(playerIdTemp.playerId, prices);
+                priceHistory = await makeObjPriceHistory(playerData.id);
+                playerData.priceHistory = priceHistory;
                 await clientRedis.setex(`${playerData.id}`, 300, JSON.stringify(playerData))
             }
 
@@ -130,6 +136,7 @@ exports.run = async (client, message, args) => {
 };
 
 async function fillInEmbed(playerData) {
+    const priceHistory = playerData.priceHistory;
     const embed = new Discord.RichEmbed();
     const fullName = playerData.commonName ? playerData.commonName : `${playerData.firstName} ${playerData.lastName}`;
     const ratingNames = makeArrRatings(playerData.position);
@@ -143,6 +150,146 @@ async function fillInEmbed(playerData) {
     embed.addField("Nation", playerData.nationName, true);
     embed.addField("Club", `${playerData.club.name} (${playerData.leagueName})`, true);
 
+    let date = new Date(`${moment().format("MM/DD/YYYY HH")}:00:00`);
+    const lastHourGMT = date.getTime() - 3600000;
+    const lastThreeHourGMT = lastHourGMT - 7200000;
+    const lastSixHourGMT = lastThreeHourGMT - 10800000;
+    const lastTwelveHourGMT = lastSixHourGMT - 21600000;
+    const yesterdayGMT = lastTwelveHourGMT - 43200000;
+    date = new Date(`${moment().format("MM/DD/YYYY")} 00:00:00`);
+    const twoDaysGMT = date.getTime() - 172800000;
+    const oneWeekGMT = date.getTime() - 604800000;
+    const psPriceToday = priceHistory.today.pc;
+    const psPriceYesterday = priceHistory.yesterday.pc;
+    const psPriceDaYesterday = priceHistory.da_yesterday.pc;
+    const psPriceDailyGraph = priceHistory.daily_graph.pc;
+
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastHourGMT)) {
+                var psLastHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (psLastHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastHourGMT)) {
+                var psLastHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastThreeHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastThreeHourGMT)) {
+                var psLastThreeHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastThreeHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (psLastThreeHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastThreeHourGMT)) {
+                var psLastThreeHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastSixHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastSixHourGMT)) {
+                var psLastSixHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastSixHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (psLastSixHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastSixHourGMT)) {
+                var psLastSixHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastTwelveHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastTwelveHourGMT)) {
+                var psLastTwelveHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastTwelveHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (psLastTwelveHourPrice === "Unknown") {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(lastTwelveHourGMT)) {
+                var psLastTwelveHourPrice = numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceYesterday.length; i++) {
+        if (psPriceYesterday[i].includes(yesterdayGMT)) {
+            var psYesterdayPrice = numberWithCommas(psPriceYesterday[i][1]);
+            break;
+        } else {
+            var psYesterdayPrice = "Unknown";
+        }
+    }
+
+    if (psYesterdayPrice === "Unknown") {
+        for (i = 0; i < psPriceDaYesterday.length; i++) {
+            if (psPriceDaYesterday[i].includes(yesterdayGMT)) {
+                var psYesterdayPrice = numberWithCommas(psPriceDaYesterday[i][1]);
+                break;
+            }
+        }
+    }
+
+    for (i = 0; i < psPriceDailyGraph.length; i++) {
+        if (psPriceDailyGraph[i].includes(twoDaysGMT)) {
+            var psTwoDaysPrice = numberWithCommas(psPriceDailyGraph[i][1]);
+            break;
+        } else {
+            var psTwoDaysPrice = "Unknown";
+        }
+    }
+
+    for (i = 0; i < psPriceDailyGraph.length; i++) {
+        if (psPriceDailyGraph[i].includes(oneWeekGMT)) {
+            var psOneWeekPrice = numberWithCommas(psPriceDailyGraph[i][1]);
+            break;
+        } else {
+            var psOneWeekPrice = "Unknown";
+        }
+    }
+
+    const psPriceHistory = `1 hour ago: ${psLastHourPrice}\n3 hours ago: ${psLastThreeHourPrice}\n6 hours ago: ${psLastSixHourPrice}\n12 hours ago: ${psLastTwelveHourPrice}\n1 day ago: ${psYesterdayPrice}\n2 days ago: ${psTwoDaysPrice}\n1 week ago: ${psOneWeekPrice}`;
     const psPrices = playerData.prices.pc;
 
     embed.addField("PC", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\n**RPR**: ${psPrices.PRP}%\n\n**Price history**\n${psPriceHistory}\n`, true);
@@ -322,6 +469,34 @@ async function getRarityName(rarity) {
     if (!d) return false;
 
     return d.rarity;
+};
+
+async function getPlayerPriceHistory(playerId, dateType) {
+    const url = `https://www.futbin.com/19/playerGraph?type=${dateType}&year=19&player=${playerId}`;
+    const res = await requestPlayerData(url);
+
+    return res;
+};
+
+async function makeObjPriceHistory(playerId) {
+    const obj = {};
+    const dateTypes = [
+        "today",
+        "yesterday",
+        "da_yesterday",
+        "daily_graph"
+    ];
+
+    for (const dateType of dateTypes) {
+        let data = await getPlayerPriceHistory(playerId, dateType);
+        obj[dateType] = data;
+    }
+
+    return obj;
+};
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 async function getDataRedis(id) {
