@@ -5,6 +5,13 @@ const AsciiTable = require('ascii-table');
 const uniqid = require('uniqid');
 const Discord = require("discord.js");
 const moment = require('moment');
+const asyncRedis = require("async-redis");
+const { redis } = require('../config');
+const clientRedis = asyncRedis.createClient(redis);
+
+clientRedis.on("error", (err) => {
+    console.log(`${err}`);
+})
 
 exports.run = async (client, message, args) => {
     let url;
@@ -34,14 +41,29 @@ exports.run = async (client, message, args) => {
     const uid = uniqid();
     let playerData;
     let prices;
+    let priceHistory;
+    let embed;
 
     switch (true) {
         case request.totalResults === 1:
-            prices = await getPlayerPrices(request.items[0].id);
-            playerData = formatPlayerData(request, prices);
+            if (await getDataRedis(request.items[0].id)) {
+                playerData = await getDataRedis(request.items[0].id);
+                embed = await fillInEmbed(playerData);
+            } else {
+                prices = await getPlayerPrices(request.items[0].id);
+                playerData = await formatPlayerData(request, prices);
+                priceHistory = await makeObjPriceHistory(playerData.id);
+                playerData.priceHistory = priceHistory;
+                await clientRedis.setex(`${playerData.id}`, 300, JSON.stringify(playerData))
+            }
+
+            embed = await fillInEmbed(playerData);
+
             break;
         case request.totalResults > 1:
             const arr = await makeArrOfRemainingPlayers(request);
+            let checkCrit;
+            let checkTime;
 
             channel.send(await makeOptionMenu(arr), {
                 split: true,
@@ -65,43 +87,55 @@ exports.run = async (client, message, args) => {
                     for (n = 0; n < arr.length; n++) {
                         choice++;
                         if (choice == res) {
-                            await pool.run(r.table("temp_storage").insert({ id: uid, baseId: `${arr[n].baseId}`, playerId: `${arr[n].playerId}`, guildId: guild.id }));
+                            const opt = {
+                                baseId: `${arr[n].baseId}`,
+                                playerId: `${arr[n].playerId}`,
+                                guildId: guild.id
+                            };
+                            await clientRedis.setex(`${uid}`, 5, JSON.stringify(opt))
                             break;
                         }
-
                     }
-
                     collected.first().delete();
                 } else {
-                    console.log("#1721");
                     throw "#1721";
                 }
             }).catch(err => {
+                if (err === "#1721") return checkCrit = true;
+
                 console.log(err);
-                if (err === "#1721") return channel.send("Message does not match the criteria, request cancelled...");
 
-                return channel.send("Cancelled, time expired...");
+                return checkTime = true;
             });
-            playerData = await pool.run(r.table("temp_storage").filter({ id: uid, guildId: guild.id }));
-            prices = await getPlayerPrices(playerData[0].playerId);
-            playerData = await getPlayerDataById(playerData[0].baseId, prices);
 
-            await pool.run(r.table("temp_storage").filter({ id: uid, guildId: guild.id }).delete());
+            if (checkCrit) return channel.send("Message does not match the criteria, request cancelled...");
+            if (checkTime) return channel.send("Cancelled, time expired...");
+
+            const playerIdTemp = await getDataRedis(uid);
+
+            if (await getDataRedis(playerIdTemp.playerId)) {
+                playerData = await getDataRedis(playerIdTemp.playerId);
+            } else {
+                prices = await getPlayerPrices(playerIdTemp.playerId);
+                playerData = await getPlayerDataById(playerIdTemp.baseId, prices);
+                priceHistory = await makeObjPriceHistory(playerData.id);
+                playerData.priceHistory = priceHistory;
+                await clientRedis.setex(`${playerData.id}`, 300, JSON.stringify(playerData))
+            }
+
+            embed = await fillInEmbed(playerData);
 
             break;
         default:
             console.log("error");
     }
 
-    const priceHistory = await makeObjPriceHistory(playerData.id);
-
-    const embed = await fillInEmbed(playerData, priceHistory);
-
     return channel.send(embed);
 
 };
 
-async function fillInEmbed(playerData, priceHistory) {
+async function fillInEmbed(playerData) {
+    const priceHistory = playerData.priceHistory;
     const embed = new Discord.RichEmbed();
     const fullName = playerData.commonName ? playerData.commonName : `${playerData.firstName} ${playerData.lastName}`;
     const ratingNames = makeArrRatings(playerData.position);
@@ -133,12 +167,16 @@ async function fillInEmbed(playerData, priceHistory) {
     const xboxPriceDaYesterday = priceHistory.da_yesterday.xbox;
     const xboxPriceDailyGraph = priceHistory.daily_graph.xbox;
 
-    for (i = 0; i < psPriceToday.length; i++) {
-        if (psPriceToday[i].includes(lastHourGMT)) {
-            var psLastHourPrice = numberWithCommas(psPriceToday[i][1]);
-            break;
-        } else {
-            var psLastHourPrice = "Unknown";
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastHourGMT)) {
+                var psLastHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastHourPrice = "Unknown";
+            }
         }
     }
 
@@ -151,12 +189,16 @@ async function fillInEmbed(playerData, priceHistory) {
         }
     }
 
-    for (i = 0; i < psPriceToday.length; i++) {
-        if (psPriceToday[i].includes(lastThreeHourGMT)) {
-            var psLastThreeHourPrice = numberWithCommas(psPriceToday[i][1]);
-            break;
-        } else {
-            var psLastThreeHourPrice = "Unknown";
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastThreeHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastThreeHourGMT)) {
+                var psLastThreeHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastThreeHourPrice = "Unknown";
+            }
         }
     }
 
@@ -169,17 +211,21 @@ async function fillInEmbed(playerData, priceHistory) {
         }
     }
 
-    for (i = 0; i < psPriceToday.length; i++) {
-        if (psPriceToday[i].includes(lastSixHourGMT)) {
-            var psLastSixHourPrice = numberWithCommas(psPriceToday[i][1]);
-            break;
-        } else {
-            var psLastSixHourPrice = "Unknown";
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastSixHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastSixHourGMT)) {
+                var psLastSixHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastSixHourPrice = "Unknown";
+            }
         }
     }
 
     if (psLastSixHourPrice === "Unknown") {
-        for (i = 0; i < psPriceYesterdaylength; i++) {
+        for (i = 0; i < psPriceYesterday.length; i++) {
             if (psPriceYesterday[i].includes(lastSixHourGMT)) {
                 var psLastSixHourPrice = numberWithCommas(psPriceYesterday[i][1]);
                 break;
@@ -187,12 +233,17 @@ async function fillInEmbed(playerData, priceHistory) {
         }
     }
 
-    for (i = 0; i < psPriceToday.length; i++) {
-        if (psPriceToday[i].includes(lastTwelveHourGMT)) {
-            var psLastTwelveHourPrice = numberWithCommas(psPriceToday[i][1]);
-            break;
-        } else {
-            var psLastTwelveHourPrice = "Unknown";
+
+    if (!psPriceToday || psPriceToday == undefined) {
+        var psLastTwelveHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceToday.length; i++) {
+            if (psPriceToday[i].includes(lastTwelveHourGMT)) {
+                var psLastTwelveHourPrice = numberWithCommas(psPriceToday[i][1]);
+                break;
+            } else {
+                var psLastTwelveHourPrice = "Unknown";
+            }
         }
     }
 
@@ -243,12 +294,16 @@ async function fillInEmbed(playerData, priceHistory) {
 
     // ============================================================================================
 
-    for (i = 0; i < xboxPriceToday.length; i++) {
-        if (xboxPriceToday[i].includes(lastHourGMT)) {
-            var xboxLastHourPrice = numberWithCommas(xboxPriceToday[i][1]);
-            break;
-        } else {
-            var xboxLastHourPrice = "Unknown";
+    if (!xboxPriceToday || xboxPriceToday == undefined) {
+        var xboxLastHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < xboxPriceToday.length; i++) {
+            if (xboxPriceToday[i].includes(lastHourGMT)) {
+                var xboxLastHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+                break;
+            } else {
+                var xboxLastHourPrice = "Unknown";
+            }
         }
     }
 
@@ -261,12 +316,16 @@ async function fillInEmbed(playerData, priceHistory) {
         }
     }
 
-    for (i = 0; i < xboxPriceToday.length; i++) {
-        if (xboxPriceToday[i].includes(lastThreeHourGMT)) {
-            var xboxLastThreeHourPrice = numberWithCommas(xboxPriceToday[i][1]);
-            break;
-        } else {
-            var xboxLastThreeHourPrice = "Unknown";
+    if (!xboxPriceToday || xboxPriceToday == undefined) {
+        var xboxLastThreeHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < xboxPriceToday.length; i++) {
+            if (xboxPriceToday[i].includes(lastThreeHourGMT)) {
+                var xboxLastThreeHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+                break;
+            } else {
+                var xboxLastThreeHourPrice = "Unknown";
+            }
         }
     }
 
@@ -279,17 +338,21 @@ async function fillInEmbed(playerData, priceHistory) {
         }
     }
 
-    for (i = 0; i < xboxPriceToday.length; i++) {
-        if (xboxPriceToday[i].includes(lastSixHourGMT)) {
-            var xboxLastSixHourPrice = numberWithCommas(xboxPriceToday[i][1]);
-            break;
-        } else {
-            var xboxLastSixHourPrice = "Unknown";
+    if (!xboxPriceToday || xboxPriceToday == undefined) {
+        var xboxLastSixHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < xboxPriceToday.length; i++) {
+            if (xboxPriceToday[i].includes(lastSixHourGMT)) {
+                var xboxLastSixHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+                break;
+            } else {
+                var xboxLastSixHourPrice = "Unknown";
+            }
         }
     }
 
     if (xboxLastSixHourPrice === "Unknown") {
-        for (i = 0; i < xboxPriceYesterdaylength; i++) {
+        for (i = 0; i < xboxPriceYesterday.length; i++) {
             if (xboxPriceYesterday[i].includes(lastSixHourGMT)) {
                 var xboxLastSixHourPrice = numberWithCommas(xboxPriceYesterday[i][1]);
                 break;
@@ -297,12 +360,16 @@ async function fillInEmbed(playerData, priceHistory) {
         }
     }
 
-    for (i = 0; i < xboxPriceToday.length; i++) {
-        if (xboxPriceToday[i].includes(lastTwelveHourGMT)) {
-            var xboxLastTwelveHourPrice = numberWithCommas(xboxPriceToday[i][1]);
-            break;
-        } else {
-            var xboxLastTwelveHourPrice = "Unknown";
+    if (!xboxPriceToday || xboxPriceToday == undefined) {
+        var xboxLastTwelveHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < xboxPriceToday.length; i++) {
+            if (xboxPriceToday[i].includes(lastTwelveHourGMT)) {
+                var xboxLastTwelveHourPrice = numberWithCommas(xboxPriceToday[i][1]);
+                break;
+            } else {
+                var xboxLastTwelveHourPrice = "Unknown";
+            }
         }
     }
 
@@ -479,7 +546,7 @@ async function requestPlayerData(url) {
 };
 
 async function getPlayerDataById(baseId, prices) {
-    const url = `https://www.easports.com/nl/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22baseid%22:%22${baseId}%22,%22link%22:1%7D`;
+    const url = `https://www.easports.com/fifa/ultimate-team/api/fut/item?jsonParamObject=%7B%22id%22:%22${baseId}%22,%22link%22:1%7D`;
     let playerData = await requestPlayerData(url);
     playerData = await formatPlayerData(playerData, prices);
 
@@ -562,4 +629,12 @@ async function makeObjPriceHistory(playerId) {
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+async function getDataRedis(id) {
+    const res = await clientRedis.get(id);
+
+    if (!res || res == null) return false;
+
+    return JSON.parse(res);
 };

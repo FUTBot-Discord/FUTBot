@@ -3,9 +3,9 @@ const Enmap = require("enmap");
 const fs = require("fs");
 
 const client = new Discord.Client();
-const config = require('./config.js');
+const { general } = require('./config.js');
 
-client.config = config;
+client.config = general;
 
 fs.readdir("./events/", (err, files) => {
   if (err) return console.error(err);
@@ -29,4 +29,4 @@ fs.readdir("./commands/", (err, files) => {
   });
 });
 
-client.login(config.general.token);
+client.login(general.token);
