@@ -5,6 +5,13 @@ const AsciiTable = require('ascii-table');
 const uniqid = require('uniqid');
 const Discord = require("discord.js");
 const moment = require('moment');
+const asyncRedis = require("async-redis");
+const { redis } = require('../config');
+const clientRedis = asyncRedis.createClient(redis);
+
+clientRedis.on("error", (err) => {
+    console.log(`${err}`);
+})
 
 exports.run = async (client, message, args) => {
     let url;
@@ -243,7 +250,7 @@ async function fillInEmbed(playerData, priceHistory) {
 
 
     embed.addField("PC", `**5 lowest BIN prices**\n- ${pcPrices.LCPrice}\n- ${pcPrices.LCPrice2}\n- ${pcPrices.LCPrice3}\n- ${pcPrices.LCPrice4}\n- ${pcPrices.LCPrice5}\n**Updated**: ${pcPrices.updated}\n**Range**: ${pcPrices.MinPrice} - ${pcPrices.MaxPrice}\n**RPR**: ${pcPrices.PRP}%\n\n**Price history**\n${pcPriceHistory}\n`, true);
-    
+
     return embed;
 };
 

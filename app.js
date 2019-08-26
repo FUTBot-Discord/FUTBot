@@ -1,5 +1,17 @@
 const Discord = require('discord.js');
+const client = new Discord.Client();
+
 const config = require('./config.js');
+
+const redis = require("redis");
+const pub = redis.createClient(config.redis);
+
+pub.on("error", (err) => {
+    console.log(`Error2 ${err}`);
+});
+
+const DBL = require("dblapi.js");
+const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUyMDY5NDYxMjA4MDMyODcwOSIsImJvdCI6dHJ1ZSwiaWF0IjoxNTQ3NjMyOTU2fQ.Q8mbinEz3TtHhK3rU5WVVou3qyiirBohq9WR2MsPWJc', client);
 
 const shardmanager = new Discord.ShardingManager('./bot.js', {
     totalShards: config.general.shards,
@@ -9,23 +21,26 @@ const shardmanager = new Discord.ShardingManager('./bot.js', {
 
 shardmanager.spawn();
 
+const delay = 2000 + ((config.general.shards - 1) * 7500);
+
 setTimeout(() => {
     shardmanager.fetchClientValues('guilds.size')
-    .then(results => {
-        console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-        shardmanager.broadcastEval(`client.user.setActivity(${results.reduce((prev, val) => prev + val, 0)}, { type: 'WATCHING' });`);
-        shardmanager.broadcastEval(`dbl.postStats(${results.reduce((prev, val) => prev + val, 0)});`);
-    })
-    .catch(console.error);
-}, 46000)
+        .then(results => {
+            var counts = results.reduce((prev, val) => prev + val, 0);
 
+            pub.publish("updateGuildsCount", `${counts}`);
+            dbl.postStats(`${counts}`);
+        })
+        .catch(console.error);
+}, delay);
 
 setInterval(() => {
-shardmanager.fetchClientValues('guilds.size')
-    .then(results => {
-        console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-        shardmanager.broadcastEval(`client.user.setActivity(${results.reduce((prev, val) => prev + val, 0)}, { type: 'WATCHING' });`);
-        shardmanager.broadcastEval(`dbl.postStats(${results.reduce((prev, val) => prev + val, 0)});`);
-    })
-    .catch(console.error);
-}, 1800000)
+    shardmanager.fetchClientValues('guilds.size')
+        .then(results => {
+            var counts = results.reduce((prev, val) => prev + val, 0);
+
+            pub.publish("updateGuildsCount", `${counts}`);
+            dbl.postStats(`${counts}`);
+        })
+        .catch(console.error);
+}, 300000);
