@@ -21,7 +21,7 @@ const shardmanager = new Discord.ShardingManager('./bot.js', {
 
 shardmanager.spawn({ delay: config.general.delay });
 
-const delay = 8000 + (config.general.shards * 8500);
+const delay = 8000 + (config.general.shards * config.general.delay);
 
 setTimeout(() => {
     shardmanager.fetchClientValues('guilds.size')
