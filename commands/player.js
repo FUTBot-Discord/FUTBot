@@ -138,7 +138,7 @@ async function fillInEmbed(playerData) {
     embed.setThumbnail(playerData.headshot);
     embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`, playerData.club.logo);
     embed.setTitle(await getRarityName(playerData.rarity));
-    embed.setDescription(`**${ratingNames[0]}**: ${playerData.ratings.pac} **${ratingNames[1]}**: ${playerData.ratings.sho} **${ratingNames[2]}**: ${playerData.ratings.pas} **${ratingNames[3]}**: ${playerData.ratings.dri} **${ratingNames[4]}**: ${playerData.ratings.def} **${ratingNames[5]}**: ${playerData.ratings.phy}`);
+    embed.setDescription(`**${ratingNames[0]}**: ${playerData.ratings.pac} **${ratingNames[1]}**: ${playerData.ratings.sho} **${ratingNames[2]}**: ${playerData.ratings.pas} **${ratingNames[3]}**: ${playerData.ratings.dri} **${ratingNames[4]}**: ${playerData.ratings.def} **${ratingNames[5]}**: ${playerData.ratings.phy}\n**WR**: ${playerData.defWorkRate}/${playerData.atkWorkRate} **SM**: ${playerData.skillMoves}★ **WF**: ${playerData.weakFoot}★\n:footprints: ${playerData.foot} :straight_ruler: ${playerData.height} :scales:️ ${playerData.weight}kg :calendar_spiral: ${playerData.age}`);
     embed.setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg");
     embed.addField("Nation", playerData.nationName, true);
     embed.addField("Club", `${playerData.club.name} (${playerData.leagueName})`, true);
@@ -239,6 +239,8 @@ function formatPlayerData(data, prices) {
         foot: data.items[0].foot,
         rarity: `${data.items[0].rarityId}-${data.items[0].quality}`,
         ovr: data.items[0].rating,
+        atkWorkRate: data.items[0].atkWorkRate,
+        defWorkRate: data.items[0].defWorkRate,
         ratings: {
             pac: data.items[0].attributes[0].value,
             sho: data.items[0].attributes[1].value,
