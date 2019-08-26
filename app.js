@@ -20,7 +20,7 @@ const shardmanager = new Discord.ShardingManager('./bot.js', {
     delay: config.general.delay
 });
 
-shardmanager.spawn(this.totalShards, this.delay);
+shardmanager.spawn(this.totalShards, config.general.delay);
 
 const delay = 7000 + (config.general.shards * config.general.delay);
 
