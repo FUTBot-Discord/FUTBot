@@ -1,5 +1,5 @@
-exports.run = async (client, message) => {
+exports.run = async (client, message, args) => {
     const cmd = client.commands.get("playerex");
 
-    return cmd.run(client, message);
+    return cmd.run(client, message, args);
 }
