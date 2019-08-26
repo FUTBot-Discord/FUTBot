@@ -18,9 +18,11 @@
     "request-promise": "^4.2.4",
     "rethinkdb": "^2.3.3",
     "rethinkdb-pool": "^1.1.0",
+    "striptags": "^3.1.1",
     "tabletojson": "^1.0.4",
     "uniqid": "^5.0.3",
-    "util": "^0.12.1"
+    "util": "^0.12.1",
+    "x-ray": "^2.3.4"
   },
   "devDependencies": {},
   "scripts": {
