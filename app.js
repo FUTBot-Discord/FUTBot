@@ -16,12 +16,13 @@ const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUyMDY5NDYxMj
 const shardmanager = new Discord.ShardingManager('./bot.js', {
     totalShards: config.general.shards,
     token: config.general.token,
-    respawn: config.general.respawn
+    respawn: config.general.respawn,
+    delay: config.general.delay
 });
 
-shardmanager.spawn({ delay: config.general.delay });
+shardmanager.spawn(this.totalShards, this.delay);
 
-const delay = 8000 + (config.general.shards * config.general.delay);
+const delay = 7000 + (config.general.shards * config.general.delay);
 
 setTimeout(() => {
     shardmanager.fetchClientValues('guilds.size')
