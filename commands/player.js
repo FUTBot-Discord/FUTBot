@@ -130,7 +130,6 @@ exports.run = async (client, message, args) => {
 };
 
 async function fillInEmbed(playerData) {
-    const priceHistory = playerData.priceHistory;
     const embed = new Discord.RichEmbed();
     const fullName = playerData.commonName ? playerData.commonName : `${playerData.firstName} ${playerData.lastName}`;
     const ratingNames = makeArrRatings(playerData.position);
@@ -147,8 +146,8 @@ async function fillInEmbed(playerData) {
     const psPrices = playerData.prices.ps;
     const xboxPrices = playerData.prices.xbox;
 
-    embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\n**RPR**: ${psPrices.PRP}%\n\n**Price history**\n${psPriceHistory}\n`, true);
-    embed.addField("XBOX", `**5 lowest BIN prices**\n- ${xboxPrices.LCPrice}\n- ${xboxPrices.LCPrice2}\n- ${xboxPrices.LCPrice3}\n- ${xboxPrices.LCPrice4}\n- ${xboxPrices.LCPrice5}\n**Updated**: ${xboxPrices.updated}\n**Range**: ${xboxPrices.MinPrice} - ${xboxPrices.MaxPrice}\n**RPR**: ${xboxPrices.PRP}%\n\n**Price history**\n${xboxPriceHistory}\n`, true);
+    embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\n**RPR**: ${psPrices.PRP}%\n`, true);
+    embed.addField("XBOX", `**5 lowest BIN prices**\n- ${xboxPrices.LCPrice}\n- ${xboxPrices.LCPrice2}\n- ${xboxPrices.LCPrice3}\n- ${xboxPrices.LCPrice4}\n- ${xboxPrices.LCPrice5}\n**Updated**: ${xboxPrices.updated}\n**Range**: ${xboxPrices.MinPrice} - ${xboxPrices.MaxPrice}\n**RPR**: ${xboxPrices.PRP}%\n`, true);
 
     return embed;
 };
