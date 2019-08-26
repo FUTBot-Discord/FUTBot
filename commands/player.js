@@ -117,7 +117,7 @@ exports.run = async (client, message, args) => {
                 playerData = await getDataRedis(playerIdTemp.playerId);
             } else {
                 prices = await getPlayerPrices(playerIdTemp.playerId);
-                playerData = await getPlayerDataById(playerIdTemp.baseId, prices);
+                playerData = await getPlayerDataById(playerIdTemp.playerId, prices);
                 priceHistory = await makeObjPriceHistory(playerData.id);
                 playerData.priceHistory = priceHistory;
                 await clientRedis.setex(`${playerData.id}`, 300, JSON.stringify(playerData))
@@ -479,8 +479,8 @@ async function getRandomProxy() {
     while (again) {
         var d = await pool.run(r.table("proxies"));
         var random = getRandomInt(0, d.length);
+        if (d[random].address) again = false;
         var address = d[random].address.split(":");
-        if (address) again = false;
     }
 
     return address;
