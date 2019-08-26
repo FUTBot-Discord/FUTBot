@@ -1,7 +1,7 @@
 require('dotenv').config()
 module.exports = {
     "general": {
-        "shards": 2,
+        "shards": 4,
         "token": process.env.D_TOKEN,
         "respawn": true
     },
