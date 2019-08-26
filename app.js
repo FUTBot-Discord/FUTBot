@@ -16,8 +16,7 @@ const dbl = new DBL('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUyMDY5NDYxMj
 const shardmanager = new Discord.ShardingManager('./bot.js', {
     totalShards: config.general.shards,
     token: config.general.token,
-    respawn: config.general.respawn,
-    delay: config.general.delay
+    respawn: config.general.respawn
 });
 
 shardmanager.spawn(this.totalShards, config.general.delay);
