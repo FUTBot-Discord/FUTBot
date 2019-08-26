@@ -6,7 +6,7 @@ const uniqid = require('uniqid');
 const Discord = require("discord.js");
 const asyncRedis = require("async-redis");
 const { redis } = require('../config');
-redis.db = 1;
+redis.db = 0;
 const clientRedis = asyncRedis.createClient(redis);
 
 clientRedis.on("error", (err) => {

@@ -7,6 +7,7 @@ const Discord = require("discord.js");
 const moment = require('moment');
 const asyncRedis = require("async-redis");
 const { redis } = require('../config');
+redis.db = 1;
 const clientRedis = asyncRedis.createClient(redis);
 
 clientRedis.on("error", (err) => {
