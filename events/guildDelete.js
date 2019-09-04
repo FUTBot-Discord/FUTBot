@@ -2,7 +2,7 @@ const rediss = require("redis");
 const { redis } = require("../config");
 const pub = rediss.createClient(redis);
 
-sub.on("error", (err) => {
+pub.on("error", (err) => {
     console.log(`Error ${err}`);
 });
 
