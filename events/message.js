@@ -3,6 +3,7 @@ const pool = require("../functions/rethinkdb");
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
+    if (!message.guild || message.guild == undefined) return;
 
     const prefix = await fetchPrefix(message.guild.id);
 
@@ -21,7 +22,7 @@ module.exports = async (client, message) => {
     cmd.run(client, message, args);
 }
 
-async function fetchPrefix (guildId) {
+async function fetchPrefix(guildId) {
     const d = await pool.run(r.table("prefix").get(guildId));
     if (d === null) return "fut!";
     return d.prefix;
