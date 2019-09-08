@@ -7,5 +7,5 @@ pub.on("error", (err) => {
 });
 
 module.exports = (client, guild) => {
-    pub.publish("addedGuild", [guild.name, guild.owner]);
+    pub.publish("addedGuild", guild);
 }
