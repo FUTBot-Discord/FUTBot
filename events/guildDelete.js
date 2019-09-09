@@ -7,5 +7,5 @@ pub.on("error", (err) => {
 });
 
 module.exports = (client, guild) => {
-    pub.publish("leftGuild", guild);
+    pub.publish("leftGuild", `{"guildName":${guild.name.toString()}, "guildOwner":${guild.owner.user.tag.toString()}}`);
 }
