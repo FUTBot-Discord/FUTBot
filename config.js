@@ -35,5 +35,13 @@ module.exports = {
             // reconnect after
             return Math.min(options.attempt * 100, 3000);
         }
+    },
+    "mysql": {
+        "host": "futbot-mariadb-1",
+        "user": "root",
+        "password": "walrus",
+        "database": "futbot",
+        "port": 3306,
+        "connectionLimit": 100
     }
 }

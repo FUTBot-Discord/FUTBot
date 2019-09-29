@@ -29,7 +29,7 @@ exports.run = async (client, message, args) => {
         .setAuthor(author)
         .setURL(url)
         .setDescription(description)
-        .setFooter("FUT Searcher v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
+        .setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
         .addField("PS", field1, true)
         .addField("XBOX", field2, true)
     return message.reply("here is your requested list:", { embed });
