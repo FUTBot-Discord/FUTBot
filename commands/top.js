@@ -5,6 +5,9 @@ const html = require("../functions/htmlscraper");
 
 exports.run = async (client, message, args) => {
     const channel = message.channel;
+
+    if (!await checkWhitelist(message.guild.id)) return channel.send("This server is not whitelisted for the feature.")
+
     const platformList = [
         "pc",
         "ps",
@@ -138,3 +141,10 @@ function getRandomInt(min, max) {
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+async function checkWhitelist(guildId) {
+    let data = await pool.run(r.table("whitelist").get(parseInt(guildId, 10)));
+
+    if (data === null) return false;
+    return true;
+}
