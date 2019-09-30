@@ -21,7 +21,7 @@ exports.run = async (client, message, args) => {
 
     const url = `https://www.futbin.com/20/players?page=1&${args[1]}_price=200-100000000&player_rating=${args[0]}&sort=${args[1]}_price&order=asc`;
 
-    let htmlData = await getHtmlData(url);
+    let htmlData = await getHtmlData(url, args[1]);
     htmlData = htmlData[2];
 
     const title = `${args[0]} overall rating players`;
@@ -32,12 +32,25 @@ exports.run = async (client, message, args) => {
     let markersplayer = [];
 
     for (var i = 0; i < 11; ++i) {
-        markersprice[i] = `${htmlData[i].PS}`;
-        markersplayer[i] = `- ${htmlData[i].Name} ${htmlData[i].POS}/${htmlData[i].VER.substring(0, 10)} ${htmlData[i].RAT}`;
+        let con;
+        switch (args[1]) {
+            case "pc":
+                con = htmlData[i].PC;
+                break;
+            case "ps":
+                con = htmlData[i].PS;
+                break;
+            case "xbox":
+                con = htmlData[i].XB;
+                break;
+        }
+
+        markersprice[i] = " ".repeat(1) + con;
+        markersplayer[i] = `- ${htmlData[i].Name} ${htmlData[i].POS}/${htmlData[i].VER.substring(0, 10)} ${htmlData[i].RAT} `;
     }
 
-    const field1 = `${markersplayer[0]}\n${markersplayer[1]}\n${markersplayer[2]}\n${markersplayer[3]}\n${markersplayer[4]}\n${markersplayer[5]}\n${markersplayer[6]}\n${markersplayer[7]}\n${markersplayer[8]}\n${markersplayer[9]}`;
-    const field2 = `${markersprice[0]}\n${markersprice[1]}\n${markersprice[2]}\n${markersprice[3]}\n${markersprice[4]}\n${markersprice[5]}\n${markersprice[6]}\n${markersprice[7]}\n${markersprice[8]}\n${markersprice[9]}`;
+    const field1 = markersplayer.join(" \n ");
+    const field2 = markersprice.join(" \n ");
 
     const embed = new Discord.RichEmbed()
         .setColor(0x2FF37A)
@@ -52,20 +65,35 @@ exports.run = async (client, message, args) => {
     return channel.send("Here is your requested list:", { embed });
 };
 
-async function getHtmlData(url) {
-    const res = await requestData(url);
+async function getHtmlData(url, platform) {
+    let pf;
+    switch (platform) {
+        case "pc":
+            pf = "pc";
+            break;
+        case "ps":
+            pf = "ps4";
+            break;
+        case "xbox":
+            pf = "xone";
+            break;
+    }
+    const res = await requestData(url, pf);
 
     return res;
 };
 
-async function requestData(url) {
+async function requestData(url, platform) {
     const [proxy, port] = await getRandomProxy();
     const reqOpts = {
         url: url,
         host: proxy,
         port: port,
         method: "GET",
-        headers: { "Cache-Control": "no-cache" }
+        headers: {
+            "Cache-Control": "no-cache",
+            "Cookie": `platform=${platform}`
+        }
     };
     const data = await html.get(reqOpts);
 
