@@ -29,7 +29,8 @@ exports.run = async (client, message, args) => {
             var buy = parseInt(buy, 10);
             var reply = buy * 1.05;
             var reply = nearest(reply, checkroundup(reply))
-            message.reply(reply);
+            if (isFinite(reply)) return message.reply(formatNumber(reply));
+            return message.reply("not every arguments was a number.");
         } else {
             var buy = args[1].replace(/\./g, '').replace(/,/g, '');
             var buy = parseInt(buy, 10);
@@ -38,7 +39,8 @@ exports.run = async (client, message, args) => {
             var buy = buy * buy1;
             var reply = buy * 1.05;
             var reply = nearest(reply, checkroundup(reply))
-            message.reply(reply);
+            if (isFinite(reply)) return message.reply(formatNumber(reply));
+            return message.reply("not every arguments was a number.");
         }
     }
 
@@ -53,7 +55,8 @@ exports.run = async (client, message, args) => {
             var buy = parseInt(buy, 10);
             var reply = Math.round(buy * 0.05);
             var reply = `${args[1]} ${args[1] - reply} ${reply}`;
-            message.reply(reply);
+            if (isFinite(reply)) return message.reply(formatNumber(reply));
+            return message.reply("not every arguments was a number.");
         } else {
             var buy = args[1].replace(/\./g, '').replace(/,/g, '');
             var buy = parseInt(buy, 10);
@@ -62,7 +65,8 @@ exports.run = async (client, message, args) => {
             var buy = buy * buy1;
             var reply = Math.round(buy * 0.05);
             var reply = `${args[1]} ${args[1] - reply} ${reply}`;
-            message.reply(reply);
+            if (isFinite(reply)) return message.reply(formatNumber(reply));
+            return message.reply("not every arguments was a number.");
         }
 
     }
@@ -78,7 +82,8 @@ exports.run = async (client, message, args) => {
         if (args[3]) amount = parseInt(args[3].replace(/\./g, '').replace(/,/g, ''), 10); buy = buy * amount; sold = sold * amount;
 
         const total = (sold - buy) * 0.95;
-        message.reply(total);
+        if (isFinite(total)) return message.reply(formatNumber(total));
+        return message.reply("not every arguments was a number.");
     }
 
     function noargMessage() {
@@ -98,5 +103,9 @@ exports.run = async (client, message, args) => {
         if (r < 10000) var roundup = 100;
         if (r < 1000) var roundup = 50;
         return roundup;
+    }
+
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
 }
