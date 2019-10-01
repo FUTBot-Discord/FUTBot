@@ -47,7 +47,7 @@ function checkGoalkeeper(position) {
 
 function getPreferredFoot(foot) {
     if (foot == 1) return "Right";
-    return "left";
+    return "Left";
 };
 
 function getWorkrateCharacter(workrate) {
