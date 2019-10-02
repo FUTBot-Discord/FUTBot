@@ -41,7 +41,6 @@ exports.run = async (client, message, args) => {
             split: true,
             code: true
         });
-
     } else if (subcommand === "get") {
         if (!args[1] || args[1] == undefined) return message.reply("fill-in a number from fut!list to get SBC information.");
 
@@ -51,7 +50,6 @@ exports.run = async (client, message, args) => {
         if (!data.some(a => a.id === id)) return message.reply("fill-in a valid id of a SBC group.");
 
         let choice = data.filter(a => a.id == id)[0];
-
         let sbcs = await getSiteData(`https://www.futbin.com/squad-building-challenges/ALL/${id}`);
 
         if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
