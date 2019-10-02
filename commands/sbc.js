@@ -16,25 +16,26 @@ exports.run = async (client, message, args) => {
 
     if (!subcommands.includes(args[0])) return message.reply("use a valid subcommand.");
 
-    let data = await getSiteData();
+    let data = await getSiteData("https://www.futbin.com/squad-building-challenges");
 
     if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
 
-    data = formatSiteData(data);
+    data = formatSBCGroupsData(data);
 
     if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
 
     if (subcommand === "list") {
-        const t = new AsciiTable("Squad Building Challenge Groups")
-            .setHeading('Number', 'Name')
+        const t = new AsciiTable("SBC Groups")
+            .setHeading('Id', 'Name')
+            .setTitleAlignCenter()
             .setAlign(1, AsciiTable.LEFT)
             .setAlign(2, AsciiTable.LEFT);
 
         for (i = 0; i < data.length; i++) {
-            t.addRow(i, data[i].title.replace("  New", ""));
+            t.addRow(data[i].id, data[i].title.replace("  New", ""));
         }
 
-        const response = `This is a list of all available SBC's.\nIn this menu you can get a number from a SBC you want.\nWith that number you can execute the other command fut!sbc get <number>.\n\n${t}`;
+        const response = `This is a list of all available SBC groups.\nIn this menu you can get a number from a SBC group you want.\nWith that number you can execute the other command fut!sbc get <number>.\n\n${t}`;
 
         return message.channel.send(response, {
             split: true,
@@ -44,12 +45,20 @@ exports.run = async (client, message, args) => {
     } else if (subcommand === "get") {
         if (!args[1] || args[1] == undefined) return message.reply("fill-in a number from fut!list to get SBC information.");
 
-        let choice = args[1];
+        let id = args[1];
 
-        if (!isFinite(choice)) return message.reply("fill-in a number not characters.");
-        if (choice > (data.length - 1)) return message.reply("fill-in a number of a SBC. This number is to high.");
+        if (!isFinite(id)) return message.reply("fill-in a number not characters.");
+        if (!data.some(a => a.id === id)) return message.reply("fill-in a valid id of a SBC group.");
 
-        choice = data[choice];
+        let choice = data.filter(a => a.id == id)[0];
+
+        let sbcs = await getSiteData(`https://www.futbin.com/squad-building-challenges/ALL/${id}`);
+
+        if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
+    
+        sbcs = formatSBCData(sbcs);
+    
+        if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
 
         const embed = new Discord.RichEmbed()
             .setColor(0x2FF37A)
@@ -59,26 +68,54 @@ exports.run = async (client, message, args) => {
             .setAuthor("Squad Building Challenge Group")
             .setImage(choice.img)
             .setDescription(choice.desc)
-            .addField("General information", `- Time remaining: ${choice.time}\n- Repeat: ${choice.repeat}`)
-            .addField("Estimated prices", `- PS4: ${formatNumber(choice.price_ps)}\n- XBOX ONE: ${formatNumber(choice.price_xb)}\n- PC: ${formatNumber(choice.price_pc)}`);
+            .addField("General information", `- Time remaining: ${choice.time}\n- Repeat: ${choice.repeat}`, true)
+            .addField("Estimated prices total", `- PS4: ${formatNumber(choice.price_ps)}\n- XBOX ONE: ${formatNumber(choice.price_xb)}\n- PC: ${formatNumber(choice.price_pc)}`, true)
+            .addBlankField();
+
+        for (sbc of sbcs) {
+            embed.addField(sbc.title, `- PS4 Price: ${formatNumber(sbc.price_ps)}\n- XBOX ONE Price: ${formatNumber(sbc.price_xb)}\n- PC Price: ${formatNumber(sbc.price_pc)}`, true);
+        }
 
         return message.channel.send(embed);
     }
 }
 
-async function getSiteData() {
+async function getSiteData(url) {
     const { host, port } = await getRandomProxy();
     const data = await rp({
         "host": host,
         "port": port,
         "method": "GET",
-        "uri": `https://www.futbin.com/squad-building-challenges`
+        "uri": url
     });
 
     return data;
 }
 
-function formatSiteData(data) {
+function formatSBCData(data) {
+    const $ = cheerio.load(data);
+    
+    let itemElements = $('.chal_col');
+    let itemList = [];
+
+    for (let i = 0; i < itemElements.length; i++) {
+        let item = itemElements.eq(i);
+
+        let title = item.find('.chal_name').text().trim();
+        let prices = item.find('.est_chal_prices_holder');
+        let price_ps = prices.attr("data-ps-price");
+        let price_xb = prices.attr("data-xone-price");
+        let price_pc = prices.attr("data-pc-price");
+
+        itemList.push({
+            title, price_ps, price_xb, price_pc
+        });
+    }
+
+    return itemList;
+}
+
+function formatSBCGroupsData(data) {
     const $ = cheerio.load(data);
 
     let itemElements = $('.col-md-3.col-xs-6.set_col.mb-5');
@@ -100,7 +137,7 @@ function formatSiteData(data) {
         if (time == "") time = "Unlimited";
 
         itemList.push({
-            title, img, time, repeat, desc, price_ps, price_xb, price_pc, href
+            title, img, time, repeat, desc, price_ps, price_xb, price_pc, href, id: href.replace("/squad-building-challenges/ALL/", "")
         });
     }
 
