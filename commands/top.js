@@ -101,7 +101,7 @@ exports.run = async (client, message, args) => {
         .setColor(0x2FF37A)
         .setAuthor(`Most increased and decreased players`)
         .setTitle(title)
-        .setURL("https://www.futbin.com/market/")
+        .setURL(url)
         .setDescription(description)
         .setFooter("FUTBot v.2.0.0 | Data from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
         .addField("Increased names", fieldUpNames, true)
