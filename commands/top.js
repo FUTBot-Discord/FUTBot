@@ -22,7 +22,32 @@ exports.run = async (client, message, args) => {
 
     if (!platformList.includes(args[0])) return message.reply("Fill in a valid console as an argument please.");
 
-    let data = await getHtmlData("https://www.futbin.com/market/", args[0]);
+    let url;
+
+    switch (args[1]) {
+        case "icon":
+            url = "https://www.futbin.com/market/Icons";
+            break;
+        case "icons":
+            url = "https://www.futbin.com/market/Icons";
+            break;
+        case "gold":
+            url = "https://www.futbin.com/market/Gold";
+            break;
+        case "golds":
+            url = "https://www.futbin.com/market/Gold";
+            break;
+        case "otw":
+            url = "https://www.futbin.com/market/OnesToWatch";
+            break;
+        case "otws":
+            url = "https://www.futbin.com/market/OnesToWatch";
+            break;
+        default:
+            url = "https://www.futbin.com/market/";
+    }
+
+    let data = await getHtmlData(url, args[0]);
 
     const topUp = data[0];
     const topDown = data[1];
