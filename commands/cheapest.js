@@ -58,7 +58,7 @@ exports.run = async (client, message, args) => {
         .setTitle(title)
         .setURL(url)
         .setDescription(description)
-        .setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
+        .setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird#0001", "https://tjird.nl/futbot.jpg")
         .addField("Name", field1, true)
         .addField("Price", field2, true);
 

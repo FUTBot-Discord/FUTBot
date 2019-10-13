@@ -30,7 +30,7 @@ exports.run = async (client, message, args) => {
         .setAuthor(author)
         .setURL(url)
         .setDescription(description)
-        .setFooter("FUT Searcher v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
+        .setFooter("FUT Searcher v.2.0.0 | Prices from FUTBIN | Made by Tjird#0001", "https://tjird.nl/futbot.jpg")
         .addField("PS", field1, true)
         .addField("XBOX", field2, true);
 

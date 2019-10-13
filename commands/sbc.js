@@ -61,7 +61,7 @@ exports.run = async (client, message, args) => {
         const embed = new Discord.RichEmbed()
             .setColor(0x2FF37A)
             .setURL(`https://www.futbin.com${choice.href}`)
-            .setFooter("FUTBot v.2.0.0 | Data from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
+            .setFooter("FUTBot v.2.0.0 | Data from FUTBIN | Made by Tjird#0001", "https://tjird.nl/futbot.jpg")
             .setTitle(choice.title)
             .setAuthor("Squad Building Challenge Group")
             .setImage(choice.img)

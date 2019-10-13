@@ -103,7 +103,7 @@ exports.run = async (client, message, args) => {
         .setTitle(title)
         .setURL(url)
         .setDescription(description)
-        .setFooter("FUTBot v.2.0.0 | Data from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg")
+        .setFooter("FUTBot v.2.0.0 | Data from FUTBIN | Made by Tjird#0001", "https://tjird.nl/futbot.jpg")
         .addField("Increased names", fieldUpNames, true)
         .addField("Increased prices", fieldUpPrices, true)
         .addBlankField()

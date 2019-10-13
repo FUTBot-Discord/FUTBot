@@ -1,5 +1,7 @@
 const r = require("rethinkdb");
 const pool = require("../functions/rethinkdb");
+const mysql = require("../functions/mysql");
+const { escape } = require("mysql");
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
@@ -18,6 +20,10 @@ module.exports = async (client, message) => {
     const cmd = client.commands.get(command);
 
     if (!cmd) return message.channel.send(`No command found that is called \`${command}\`.`);
+
+    let username = `${message.author.username}#${message.author.discriminator}`;
+
+    mysql.query(`INSERT INTO command_log (guild_name, guild_id, user_name, user_id, channel_name, channel_id, command) VALUES (${escape(message.guild.name)}, ${message.guild.id}, ${escape(username)}, ${message.author.id}, ${escape(message.channel.name)}, ${message.channel.id}, ${escape(command)})`);
 
     cmd.run(client, message, args);
 }

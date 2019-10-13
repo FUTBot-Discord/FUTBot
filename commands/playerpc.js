@@ -139,7 +139,7 @@ async function fillInEmbed(playerData) {
     embed.setThumbnail(playerData.headshot);
     embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`, playerData.club.logo);
     embed.setDescription(`Version: ${general.getRarityName(playerData.rarity)}`);
-    embed.setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird, inspired by ajpiano", "https://tjird.nl/futbot.jpg");
+    embed.setFooter("FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird#0001", "https://tjird.nl/futbot.jpg");
 
     const psPrices = playerData.prices.pc;
 
