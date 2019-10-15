@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
     ];
     const subcommand = args[0];
 
-    if (!subcommands.includes(args[0])) return message.reply("use a valid subcommand.");
+    if (!subcommands.includes(subcommand)) return message.reply("use a valid subcommand.");
 
     let data = await getSiteData("https://www.futbin.com/squad-building-challenges");
 
@@ -53,9 +53,9 @@ exports.run = async (client, message, args) => {
         let sbcs = await getSiteData(`https://www.futbin.com/squad-building-challenges/ALL/${id}`);
 
         if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
-    
+
         sbcs = formatSBCData(sbcs);
-    
+
         if (!data || data == undefined || data == null) return message.reply("oops something wrong happend. Try again later pls.");
 
         const embed = new Discord.RichEmbed()
@@ -92,7 +92,7 @@ async function getSiteData(url) {
 
 function formatSBCData(data) {
     const $ = cheerio.load(data);
-    
+
     let itemElements = $('.chal_col');
     let itemList = [];
 

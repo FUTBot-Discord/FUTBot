@@ -8,7 +8,8 @@ module.exports = {
         "shards": shardNumber,
         "token": process.env.D_TOKEN,
         "respawn": true,
-        "delay": delayNumber
+        "delay": delayNumber,
+        "graphql": process.env.G_ENDPOINT
     },
     "rethinkdb": {
         "host": process.env.RDB_HOST,

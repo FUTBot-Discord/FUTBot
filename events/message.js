@@ -2,31 +2,48 @@ const r = require("rethinkdb");
 const pool = require("../functions/rethinkdb");
 const mysql = require("../functions/mysql");
 const { escape } = require("mysql");
+const general = require("../functions/general");
 
 module.exports = async (client, message) => {
     if (message.author.bot) return;
     if (!message.guild || message.guild == undefined) return;
 
-    const prefix = await fetchPrefix(message.guild.id);
+    const author = message.author;
+    const channel = message.channel;
+    const guild = message.guild;
 
-    if (message.content.startsWith(`<@${client.user.id}>`)) return message.channel.send(`The current prefix is: \`${prefix}\`.`);
+    const prefix = await fetchPrefix(guild.id);
+
+    if (message.content.startsWith(`<@${client.user.id}>`)) return channel.send(`The current prefix is: \`${prefix}\`.`);
     if (!message.content.startsWith(prefix)) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    if (!command) return message.channel.send(`Use the command \`${prefix}help\` to see all commands.`);
+    if (!command) return channel.send(`Use the command \`${prefix}help\` to see all commands.`);
 
     const cmd = client.commands.get(command);
 
-    if (!cmd) return message.channel.send(`No command found that is called \`${command}\`.`);
+    if (!cmd) return channel.send(`No command found that is called \`${command}\`.`);
+    if (command === "admin") {
+        if (author.id === "259012839379828739") {
+            general.insertCommandLog(author.username, author.discriminator, author.id, guild.id, guild.name, channel.name, channel.id, command, args);
 
-    let username = `${message.author.username}#${message.author.discriminator}`;
-    let cmdInsert = `${command} ${args.join(" ")}`
+            return cmd.run(client, message, args);
+        } else {
+            return channel.send(`${author.username}#${author.discriminator} is not allowed to use the command called \`${command}\`.`);
+        }
+    }
 
-    mysql.query(`INSERT INTO command_log (guild_name, guild_id, user_name, user_id, channel_name, channel_id, command) VALUES (${escape(message.guild.name)}, ${message.guild.id}, ${escape(username)}, ${message.author.id}, ${escape(message.channel.name)}, ${message.channel.id}, ${escape(cmdInsert)})`);
+    const cmdlist = await general.getCommandsList();
 
-    cmd.run(client, message, args);
+    if (!cmdlist.includes(command)) {
+        if (!await general.getCommandWhitelist(command, guild.id)) return channel.send(`This server is not whitelisted for the command called \`${command}\`.`);
+    }
+
+    general.insertCommandLog(author.username, author.discriminator, author.id, guild.id, guild.name, channel.name, channel.id, command, args);
+
+    return cmd.run(client, message, args);
 }
 
 async function fetchPrefix(guildId) {

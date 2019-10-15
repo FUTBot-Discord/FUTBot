@@ -1,10 +1,15 @@
-const r = require("rethinkdb");
-const pool = require("../functions/rethinkdb");
-const rp = require("request-promise");
+const { general } = require("../config");
 const raritiesList = require("../rarities.json");
 const AsciiTable = require('ascii-table');
+const rp = require("request-promise");
+
+const r = require("rethinkdb");
+const pool = require("../functions/rethinkdb");
+
 const { GraphQLClient } = require('graphql-request');
-const clientGraphQL = new GraphQLClient("http://futbot-graphql-1:5000/graphql", { headers: {} });
+const url = general.graphql;
+const clientGraphQL = new GraphQLClient(general.graphql, { headers: {} });
+
 
 async function getRandomProxy() {
     var again = true;
@@ -250,10 +255,170 @@ async function requestPlayerData(option, args) {
             requestPlayer = await clientGraphQL.request(queryPlayer);
             return requestPlayer.FUTBotGetPlayersByName;
         case 4:
-            queryPlayer = `{ FUTBotGetPlayersByName(name: "${args[0]} ${args[1]}", , rating: ${args[2]}) { rating rareflag common_name id first_name last_name } }`;
+            queryPlayer = `{ FUTBotGetPlayersByName(name: "${args[0]} ${args[1]}", rating: ${args[2]}) { rating rareflag common_name id first_name last_name } }`;
             requestPlayer = await clientGraphQL.request(queryPlayer);
             return requestPlayer.FUTBotGetPlayersByName;
     }
+};
+
+async function insertCommandLog(username, discriminator, userid, guildid, guildname, channelname, channelid, command, args) {
+    username = `${username}#${discriminator}`;
+    command = `${command} ${args.join(" ")}`;
+
+    let logItem = `mutation { addCommandLog(command: "${command}", guildId: "${guildid}", channelId: "${channelid}", userId: "${userid}", guildName: "${guildname}", channelName: "${channelname}", userName: "${username}") { id } }`;
+
+    try {
+        await clientGraphQL.request(logItem);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+async function insertCommandWhitelist(command, guildId) {
+    let query = `mutation { addCommandWhitelist(command: "${command}", guildId: "${guildId}") { id } }`;
+
+    try {
+        await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+async function removeCommandWhitelist(command, guildId) {
+    let query = `mutation { removeCommandWhitelist(command: "${command}", guildId: "${guildId}") { id } }`;
+
+    try {
+        await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+async function clearFlippingList(pConsole, guildId) {
+    let query = `mutation { removeItemFlippingList(pConsole: "${pConsole}", guildId: "${guildId}") { id } }`;
+
+    try {
+        await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+async function removeItemFlippingList(pConsole, guildId, player_id) {
+    let query = `mutation { removeItemFlippingList(pConsole: "${pConsole}", guildId: "${guildId}", player_id: ${player_id}) { id } }`;
+
+    try {
+        await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+async function getItemFlippingList(pConsole, guildId, player_id) {
+    let query = `{ getFlippingListItem(console: "${pConsole}", guild_id: "${guildId}", player_id: ${player_id}) { id } }`;
+    let res;
+
+    try {
+        res = await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    if (!res.getFlippingListItem || res.getFlippingListItem == undefined || res.getFlippingListItem.length < 1) return false;
+
+    return true;
+};
+
+async function addItemFlippingList(pConsole, guildId, player_id, buy_price, sell_price, sold_price) {
+    let query = `mutation { addItemFlippingList(pConsole: "${pConsole}", guildId: "${guildId}", player_id: ${player_id}, buy_price: ${buy_price}, sell_price: ${sell_price}, sold_price: ${sold_price}) { id } }`;
+
+    try {
+        await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+async function updateItemFlippingList(pConsole, guildId, player_id, buy_price, sell_price, sold_price) {
+    let query = `mutation { updateItemFlippingList(pConsole: "${pConsole}", guildId: "${guildId}", player_id: ${player_id}, buy_price: ${buy_price}, sell_price: ${sell_price}, sold_price: ${sold_price}) { id } }`;
+
+    try {
+        await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return true;
+};
+
+
+async function getCommandWhitelist(command, guildId) {
+    let query = `{ getCommandWhitelist(command: "${command}", guild_id: "${guildId}") { id command guild_id } }`;
+    let res;
+
+    try {
+        res = await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    if (res.getCommandWhitelist === undefined || res.getCommandWhitelist.length < 1) return false;
+
+    return true;
+};
+
+async function getCommandsList() {
+    let query = `{ getCommandsPublic { id command } }`;
+    let res;
+    let array = [];
+
+    try {
+        res = await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    for (command of res.getCommandsPublic) {
+        array.push(command.command);
+    }
+
+    return array;
+};
+
+async function getFlippingList(g, c) {
+    let query = `{ getFlippingList(guild_id: "${g}", console: "${c}") { player_id console buy_price sell_price sold_price player_info { meta_info { first_name last_name common_name } } } }`;
+    let res;
+
+    try {
+        res = await clientGraphQL.request(query);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+
+    return res.getFlippingList;
 };
 
 async function getPlayerDataById(id) {
@@ -291,23 +456,39 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+function checkPermissionAdmin(guildMember) {
+    return guildMember.permissions.has("ADMINISTRATOR");
+};
+
 module.exports = {
-    getRandomInt: getRandomInt,
-    getRandomProxy: getRandomProxy,
-    getUrlData: getUrlData,
-    checkGoalkeeper: checkGoalkeeper,
-    getWorkrateCharacter: getWorkrateCharacter,
-    getPreferredFoot: getPreferredFoot,
-    getRarityName: getRarityName,
-    getAge: getAge,
-    makeArrRatings: makeArrRatings,
-    getQuality: getQuality,
-    getPlayerPrices: getPlayerPrices,
-    makeOptionMenu: makeOptionMenu,
-    formatPlayerData: formatPlayerData,
-    makeArrOfRemainingPlayers: makeArrOfRemainingPlayers,
-    requestPlayerData: requestPlayerData,
-    getPlayerDataById: getPlayerDataById,
-    makeObjPriceHistory: makeObjPriceHistory,
-    numberWithCommas: numberWithCommas
+    getRandomInt,
+    getRandomProxy,
+    getUrlData,
+    checkGoalkeeper,
+    getWorkrateCharacter,
+    getPreferredFoot,
+    getRarityName,
+    getAge,
+    makeArrRatings,
+    getQuality,
+    getPlayerPrices,
+    makeOptionMenu,
+    formatPlayerData,
+    makeArrOfRemainingPlayers,
+    requestPlayerData,
+    getPlayerDataById,
+    makeObjPriceHistory,
+    numberWithCommas,
+    insertCommandLog,
+    insertCommandWhitelist,
+    removeCommandWhitelist,
+    getCommandWhitelist,
+    getCommandsList,
+    checkPermissionAdmin,
+    getFlippingList,
+    clearFlippingList,
+    removeItemFlippingList,
+    getItemFlippingList,
+    addItemFlippingList,
+    updateItemFlippingList
 };
