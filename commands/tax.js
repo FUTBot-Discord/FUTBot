@@ -54,7 +54,6 @@ exports.run = async (client, message, args) => {
             var buy = args[1].replace(/\./g, '').replace(/,/g, '');
             var buy = parseInt(buy, 10);
             var reply = Math.round(buy * 0.05);
-            var reply = `${args[1]} ${args[1] - reply} ${reply}`;
             if (isFinite(reply)) return message.reply(formatNumber(reply));
             return message.reply("not every arguments was a number.");
         } else {
@@ -64,7 +63,6 @@ exports.run = async (client, message, args) => {
             var buy1 = parseInt(buy1, 10);
             var buy = buy * buy1;
             var reply = Math.round(buy * 0.05);
-            var reply = `${args[1]} ${args[1] - reply} ${reply}`;
             if (isFinite(reply)) return message.reply(formatNumber(reply));
             return message.reply("not every arguments was a number.");
         }
