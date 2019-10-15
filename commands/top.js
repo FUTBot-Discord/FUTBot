@@ -6,8 +6,6 @@ const html = require("../functions/htmlscraper");
 exports.run = async (client, message, args) => {
     const channel = message.channel;
 
-    if (!await checkWhitelist(message.guild.id)) return channel.send("This server is not whitelisted for the feature.")
-
     const platformList = [
         "pc",
         "ps",
