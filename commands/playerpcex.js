@@ -283,10 +283,14 @@ async function fillInEmbed(playerData) {
     }
 
     if (psYesterdayPrice === "Unknown") {
-        for (i = 0; i < psPriceDaYesterday.length; i++) {
-            if (psPriceDaYesterday[i].includes(yesterdayGMT)) {
-                var psYesterdayPrice = general.numberWithCommas(psPriceDaYesterday[i][1]);
-                break;
+        if (!psPriceDaYesterday || psPriceDaYesterday == undefined) {
+            var psYesterdayPrice = "Unknown";
+        } else {
+            for (i = 0; i < psPriceDaYesterday.length; i++) {
+                if (psPriceDaYesterday[i].includes(yesterdayGMT)) {
+                    var psYesterdayPrice = general.numberWithCommas(psPriceDaYesterday[i][1]);
+                    break;
+                }
             }
         }
     }
