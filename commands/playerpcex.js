@@ -177,12 +177,17 @@ async function fillInEmbed(playerData) {
     }
 
     if (psLastHourPrice === "Unknown") {
-        for (i = 0; i < psPriceYesterday.length; i++) {
-            if (psPriceYesterday[i].includes(lastHourGMT)) {
-                var psLastHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
-                break;
+        if (!psPriceYesterday || psPriceYesterday == undefined) {
+            var psLastHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < psPriceYesterday.length; i++) {
+                if (psPriceYesterday[i].includes(lastHourGMT)) {
+                    var psLastHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
+                    break;
+                }
             }
         }
+
     }
 
     if (!psPriceToday || psPriceToday == undefined) {
@@ -199,10 +204,14 @@ async function fillInEmbed(playerData) {
     }
 
     if (psLastThreeHourPrice === "Unknown") {
-        for (i = 0; i < psPriceYesterday.length; i++) {
-            if (psPriceYesterday[i].includes(lastThreeHourGMT)) {
-                var psLastThreeHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
-                break;
+        if (!psPriceYesterday || psPriceYesterday == undefined) {
+            var psLastThreeHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < psPriceYesterday.length; i++) {
+                if (psPriceYesterday[i].includes(lastThreeHourGMT)) {
+                    var psLastThreeHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
+                    break;
+                }
             }
         }
     }
@@ -221,10 +230,14 @@ async function fillInEmbed(playerData) {
     }
 
     if (psLastSixHourPrice === "Unknown") {
-        for (i = 0; i < psPriceYesterday.length; i++) {
-            if (psPriceYesterday[i].includes(lastSixHourGMT)) {
-                var psLastSixHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
-                break;
+        if (!psPriceYesterday || psPriceYesterday == undefined) {
+            var psLastSixHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < psPriceYesterday.length; i++) {
+                if (psPriceYesterday[i].includes(lastSixHourGMT)) {
+                    var psLastSixHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
+                    break;
+                }
             }
         }
     }
@@ -244,20 +257,28 @@ async function fillInEmbed(playerData) {
     }
 
     if (psLastTwelveHourPrice === "Unknown") {
-        for (i = 0; i < psPriceYesterday.length; i++) {
-            if (psPriceYesterday[i].includes(lastTwelveHourGMT)) {
-                var psLastTwelveHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
-                break;
+        if (!psPriceYesterday || psPriceYesterday == undefined) {
+            var psLastTwelveHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < psPriceYesterday.length; i++) {
+                if (psPriceYesterday[i].includes(lastTwelveHourGMT)) {
+                    var psLastTwelveHourPrice = general.numberWithCommas(psPriceYesterday[i][1]);
+                    break;
+                }
             }
         }
     }
 
-    for (i = 0; i < psPriceYesterday.length; i++) {
-        if (psPriceYesterday[i].includes(yesterdayGMT)) {
-            var psYesterdayPrice = general.numberWithCommas(psPriceYesterday[i][1]);
-            break;
-        } else {
-            var psYesterdayPrice = "Unknown";
+    if (!psPriceYesterday || psPriceYesterday == undefined) {
+        var psYesterdayPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceYesterday.length; i++) {
+            if (psPriceYesterday[i].includes(yesterdayGMT)) {
+                var psYesterdayPrice = general.numberWithCommas(psPriceYesterday[i][1]);
+                break;
+            } else {
+                var psYesterdayPrice = "Unknown";
+            }
         }
     }
 
@@ -270,21 +291,29 @@ async function fillInEmbed(playerData) {
         }
     }
 
-    for (i = 0; i < psPriceDailyGraph.length; i++) {
-        if (psPriceDailyGraph[i].includes(twoDaysGMT)) {
-            var psTwoDaysPrice = general.numberWithCommas(psPriceDailyGraph[i][1]);
-            break;
-        } else {
-            var psTwoDaysPrice = "Unknown";
+    if (!psPriceDailyGraph || psPriceDailyGraph == undefined) {
+        var psTwoDaysPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceDailyGraph.length; i++) {
+            if (psPriceDailyGraph[i].includes(twoDaysGMT)) {
+                var psTwoDaysPrice = general.numberWithCommas(psPriceDailyGraph[i][1]);
+                break;
+            } else {
+                var psTwoDaysPrice = "Unknown";
+            }
         }
     }
 
-    for (i = 0; i < psPriceDailyGraph.length; i++) {
-        if (psPriceDailyGraph[i].includes(oneWeekGMT)) {
-            var psOneWeekPrice = general.numberWithCommas(psPriceDailyGraph[i][1]);
-            break;
-        } else {
-            var psOneWeekPrice = "Unknown";
+    if (!psPriceDailyGraph || psPriceDailyGraph == undefined) {
+        var psOneWeekPrice = "Unknown";
+    } else {
+        for (i = 0; i < psPriceDailyGraph.length; i++) {
+            if (psPriceDailyGraph[i].includes(oneWeekGMT)) {
+                var psOneWeekPrice = general.numberWithCommas(psPriceDailyGraph[i][1]);
+                break;
+            } else {
+                var psOneWeekPrice = "Unknown";
+            }
         }
     }
 
