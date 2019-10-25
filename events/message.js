@@ -15,7 +15,7 @@ module.exports = async (client, message) => {
     const prefix = await fetchPrefix(guild.id);
 
     if (message.content.startsWith(`<@${client.user.id}>`)) return channel.send(`The current prefix is: \`${prefix}\`.`);
-    if (!message.content.startsWith(prefix.toLowerCase())) return;
+    if (!message.content.toLowerCase().startsWith(prefix.toLowerCase())) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
