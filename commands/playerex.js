@@ -143,8 +143,8 @@ async function fillInEmbed(playerData) {
     embed.setColor(0x2FF37A);
     // embed.setThumbnail(playerData.headshot);
     embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`, playerData.club.logo);
-    embed.setTitle(general.getRarityName(playerData.rarity));
-    embed.setDescription(`**${ratingNames[0]}**: ${playerData.ratings.pac} **${ratingNames[1]}**: ${playerData.ratings.sho} **${ratingNames[2]}**: ${playerData.ratings.pas} **${ratingNames[3]}**: ${playerData.ratings.dri} **${ratingNames[4]}**: ${playerData.ratings.def} **${ratingNames[5]}**: ${playerData.ratings.phy}\n**WR**: ${playerData.atkWorkRate} / ${playerData.defWorkRate} **SM**: ${playerData.skillMoves}★ **WF**: ${playerData.weakFoot}★\n:footprints: ${playerData.foot} :straight_ruler: ${playerData.height.toString().substring(0, 1)},${playerData.height.toString().substring(1)} M :calendar_spiral: ${playerData.age} years`);
+    embed.setDescription(`Version: ${general.getRarityName(playerData.rarity)}`);
+    // embed.setDescription(`**${ratingNames[0]}**: ${playerData.ratings.pac} **${ratingNames[1]}**: ${playerData.ratings.sho} **${ratingNames[2]}**: ${playerData.ratings.pas} **${ratingNames[3]}**: ${playerData.ratings.dri} **${ratingNames[4]}**: ${playerData.ratings.def} **${ratingNames[5]}**: ${playerData.ratings.phy}\n**WR**: ${playerData.atkWorkRate} / ${playerData.defWorkRate} **SM**: ${playerData.skillMoves}★ **WF**: ${playerData.weakFoot}★\n:footprints: ${playerData.foot} :straight_ruler: ${playerData.height.toString().substring(0, 1)},${playerData.height.toString().substring(1)} M :calendar_spiral: ${playerData.age} years`);
     embed.setFooter(`FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird#0001 | PlayerId: ${playerData.id}`, "https://tjird.nl/futbot.jpg");
     embed.addField("Nation", playerData.nationName, true);
     embed.addField("Club", `${playerData.club.name} (${playerData.leagueName})`, true);
@@ -657,7 +657,7 @@ async function fillInEmbed(playerData) {
     const xboxPrices = playerData.prices.xbox;
     const pcPrices = playerData.prices.pc;
 
-    embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**RPR**: ${psPrices.PRP}%\n\n**Range**:\n${psPrices.MinPrice} - ${psPrices.MaxPrice}\xa0\n\n**Price history**\n${psPriceHistory}\n`, true);
+    embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**RPR**: ${psPrices.PRP}%\n**Range**:\n${psPrices.MinPrice} - ${psPrices.MaxPrice}\xa0\n\n**Price history**\n${psPriceHistory}\n`, true);
     embed.addField("XBOX", `**5 lowest BIN prices**\n- ${xboxPrices.LCPrice}\n- ${xboxPrices.LCPrice2}\n- ${xboxPrices.LCPrice3}\n- ${xboxPrices.LCPrice4}\n- ${xboxPrices.LCPrice5}\n**Updated**: ${xboxPrices.updated}\n**RPR**: ${xboxPrices.PRP}%\n**Range**:\n${xboxPrices.MinPrice} - ${xboxPrices.MaxPrice}\xa0\n\n**Price history**\n${xboxPriceHistory}\n`, true);
     embed.addField("PC", `**5 lowest BIN prices**\n- ${pcPrices.LCPrice}\n- ${pcPrices.LCPrice2}\n- ${pcPrices.LCPrice3}\n- ${pcPrices.LCPrice4}\n- ${pcPrices.LCPrice5}\n**Updated**: ${pcPrices.updated}\n**RPR**: ${pcPrices.PRP}%\n**Range**:\n${pcPrices.MinPrice} - ${pcPrices.MaxPrice}\xa0\n\n**Price history**\n${pcPriceHistory}\n`, true);
 
