@@ -143,9 +143,11 @@ async function fillInEmbed(playerData) {
 
     const psPrices = playerData.prices.ps;
     const xboxPrices = playerData.prices.xbox;
+    const pcPrices = playerData.prices.pc;
 
     embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\xa0\xa0\n**RPR**: ${psPrices.PRP}%\n`, true);
     embed.addField("XBOX", `**5 lowest BIN prices**\n- ${xboxPrices.LCPrice}\n- ${xboxPrices.LCPrice2}\n- ${xboxPrices.LCPrice3}\n- ${xboxPrices.LCPrice4}\n- ${xboxPrices.LCPrice5}\n**Updated**: ${xboxPrices.updated}\n**Range**: ${xboxPrices.MinPrice} - ${xboxPrices.MaxPrice}\xa0\xa0\n**RPR**: ${xboxPrices.PRP}%\n`, true);
+    embed.addField("PC", `**5 lowest BIN prices**\n- ${pcPrices.LCPrice}\n- ${pcPrices.LCPrice2}\n- ${pcPrices.LCPrice3}\n- ${pcPrices.LCPrice4}\n- ${pcPrices.LCPrice5}\n**Updated**: ${pcPrices.updated}\n**Range**: ${pcPrices.MinPrice} - ${pcPrices.MaxPrice}\n**RPR**: ${pcPrices.PRP}%\n`, true);
 
     return embed;
 };

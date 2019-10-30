@@ -52,11 +52,13 @@ exports.run = async (client, message, args) => {
         .setTitle("Ticket creation")
         .setColor('0x1178F2')
         .attachFile('./logo.png')
-        .setAuthor("ShinyMC Tickets", 'attachment://logo.png')
-        .setFooter("This request is closing in 20 seconds.");
+        .setAuthor("ShinyMC Tickets", 'attachment://logo.png');
+    // .setFooter("This request is closing in 20 seconds.");
 
     await channel.send(aMOption)
         .then(m => aMOption = m);
+
+    return;
 
     const aMOptionRes = await setDialogue(filter, channel, 20000);
 

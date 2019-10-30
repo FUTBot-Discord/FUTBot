@@ -166,6 +166,10 @@ async function fillInEmbed(playerData) {
     const xboxPriceYesterday = priceHistory.yesterday.xbox;
     const xboxPriceDaYesterday = priceHistory.da_yesterday.xbox;
     const xboxPriceDailyGraph = priceHistory.daily_graph.xbox;
+    const pcPriceToday = priceHistory.today.pc;
+    const pcPriceYesterday = priceHistory.yesterday.pc;
+    const pcPriceDaYesterday = priceHistory.da_yesterday.pc;
+    const pcPriceDailyGraph = priceHistory.daily_graph.pc;
 
     if (!psPriceToday || psPriceToday == undefined) {
         var psLastHourPrice = "Unknown";
@@ -485,13 +489,177 @@ async function fillInEmbed(playerData) {
         }
     }
 
+    // ============================================================================================
+
+    if (!pcPriceToday || pcPriceToday == undefined) {
+        var pcLastHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceToday.length; i++) {
+            if (pcPriceToday[i].includes(lastHourGMT)) {
+                var pcLastHourPrice = general.numberWithCommas(pcPriceToday[i][1]);
+                break;
+            } else {
+                var pcLastHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (pcLastHourPrice === "Unknown") {
+        if (!pcPriceYesterday || pcPriceYesterday == undefined) {
+            var pcLastHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < pcPriceYesterday.length; i++) {
+                if (pcPriceYesterday[i].includes(lastHourGMT)) {
+                    var pcLastHourPrice = general.numberWithCommas(pcPriceYesterday[i][1]);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    if (!pcPriceToday || pcPriceToday == undefined) {
+        var pcLastThreeHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceToday.length; i++) {
+            if (pcPriceToday[i].includes(lastThreeHourGMT)) {
+                var pcLastThreeHourPrice = general.numberWithCommas(pcPriceToday[i][1]);
+                break;
+            } else {
+                var pcLastThreeHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (pcLastThreeHourPrice === "Unknown") {
+        if (!pcPriceYesterday || pcPriceYesterday == undefined) {
+            var pcLastThreeHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < pcPriceYesterday.length; i++) {
+                if (pcPriceYesterday[i].includes(lastThreeHourGMT)) {
+                    var pcLastThreeHourPrice = general.numberWithCommas(pcPriceYesterday[i][1]);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!pcPriceToday || pcPriceToday == undefined) {
+        var pcLastSixHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceToday.length; i++) {
+            if (pcPriceToday[i].includes(lastSixHourGMT)) {
+                var pcLastSixHourPrice = general.numberWithCommas(pcPriceToday[i][1]);
+                break;
+            } else {
+                var pcLastSixHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (pcLastSixHourPrice === "Unknown") {
+        if (!pcPriceYesterday || pcPriceYesterday == undefined) {
+            var pcLastSixHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < pcPriceYesterday.length; i++) {
+                if (pcPriceYesterday[i].includes(lastSixHourGMT)) {
+                    var pcLastSixHourPrice = general.numberWithCommas(pcPriceYesterday[i][1]);
+                    break;
+                }
+            }
+        }
+    }
+
+
+    if (!pcPriceToday || pcPriceToday == undefined) {
+        var pcLastTwelveHourPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceToday.length; i++) {
+            if (pcPriceToday[i].includes(lastTwelveHourGMT)) {
+                var pcLastTwelveHourPrice = general.numberWithCommas(pcPriceToday[i][1]);
+                break;
+            } else {
+                var pcLastTwelveHourPrice = "Unknown";
+            }
+        }
+    }
+
+    if (pcLastTwelveHourPrice === "Unknown") {
+        if (!pcPriceYesterday || pcPriceYesterday == undefined) {
+            var pcLastTwelveHourPrice = "Unknown";
+        } else {
+            for (i = 0; i < pcPriceYesterday.length; i++) {
+                if (pcPriceYesterday[i].includes(lastTwelveHourGMT)) {
+                    var pcLastTwelveHourPrice = general.numberWithCommas(pcPriceYesterday[i][1]);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!pcPriceYesterday || pcPriceYesterday == undefined) {
+        var pcYesterdayPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceYesterday.length; i++) {
+            if (pcPriceYesterday[i].includes(yesterdayGMT)) {
+                var pcYesterdayPrice = general.numberWithCommas(pcPriceYesterday[i][1]);
+                break;
+            } else {
+                var pcYesterdayPrice = "Unknown";
+            }
+        }
+    }
+
+    if (pcYesterdayPrice === "Unknown") {
+        if (!pcPriceDaYesterday || pcPriceDaYesterday == undefined) {
+            var pcYesterdayPrice = "Unknown";
+        } else {
+            for (i = 0; i < pcPriceDaYesterday.length; i++) {
+                if (pcPriceDaYesterday[i].includes(yesterdayGMT)) {
+                    var pcYesterdayPrice = general.numberWithCommas(pcPriceDaYesterday[i][1]);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!pcPriceDailyGraph || pcPriceDailyGraph == undefined) {
+        var pcTwoDaysPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceDailyGraph.length; i++) {
+            if (pcPriceDailyGraph[i].includes(twoDaysGMT)) {
+                var pcTwoDaysPrice = general.numberWithCommas(pcPriceDailyGraph[i][1]);
+                break;
+            } else {
+                var pcTwoDaysPrice = "Unknown";
+            }
+        }
+    }
+
+    if (!pcPriceDailyGraph || pcPriceDailyGraph == undefined) {
+        var pcOneWeekPrice = "Unknown";
+    } else {
+        for (i = 0; i < pcPriceDailyGraph.length; i++) {
+            if (pcPriceDailyGraph[i].includes(oneWeekGMT)) {
+                var pcOneWeekPrice = general.numberWithCommas(pcPriceDailyGraph[i][1]);
+                break;
+            } else {
+                var pcOneWeekPrice = "Unknown";
+            }
+        }
+    }
+
     const psPriceHistory = `1 hour ago: ${psLastHourPrice}\n3 hours ago: ${psLastThreeHourPrice}\n6 hours ago: ${psLastSixHourPrice}\n12 hours ago: ${psLastTwelveHourPrice}\n1 day ago: ${psYesterdayPrice}\n2 days ago: ${psTwoDaysPrice}\n1 week ago: ${psOneWeekPrice}`;
     const xboxPriceHistory = `1 hour ago: ${xboxLastHourPrice}\n3 hours ago: ${xboxLastThreeHourPrice}\n6 hours ago: ${xboxLastSixHourPrice}\n12 hours ago: ${xboxLastTwelveHourPrice}\n1 day ago: ${xboxYesterdayPrice}\n2 days ago: ${xboxTwoDaysPrice}\n1 week ago: ${xboxOneWeekPrice}`;
+    const pcPriceHistory = `1 hour ago: ${pcLastHourPrice}\n3 hours ago: ${pcLastThreeHourPrice}\n6 hours ago: ${pcLastSixHourPrice}\n12 hours ago: ${pcLastTwelveHourPrice}\n1 day ago: ${pcYesterdayPrice}\n2 days ago: ${pcTwoDaysPrice}\n1 week ago: ${pcOneWeekPrice}`;
+
     const psPrices = playerData.prices.ps;
     const xboxPrices = playerData.prices.xbox;
+    const pcPrices = playerData.prices.pc;
 
     embed.addField("PS", `**5 lowest BIN prices**\n- ${psPrices.LCPrice}\n- ${psPrices.LCPrice2}\n- ${psPrices.LCPrice3}\n- ${psPrices.LCPrice4}\n- ${psPrices.LCPrice5}\n**Updated**: ${psPrices.updated}\n**Range**: ${psPrices.MinPrice} - ${psPrices.MaxPrice}\n**RPR**: ${psPrices.PRP}%\n\n**Price history**\n${psPriceHistory}\n`, true);
     embed.addField("XBOX", `**5 lowest BIN prices**\n- ${xboxPrices.LCPrice}\n- ${xboxPrices.LCPrice2}\n- ${xboxPrices.LCPrice3}\n- ${xboxPrices.LCPrice4}\n- ${xboxPrices.LCPrice5}\n**Updated**: ${xboxPrices.updated}\n**Range**: ${xboxPrices.MinPrice} - ${xboxPrices.MaxPrice}\n**RPR**: ${xboxPrices.PRP}%\n\n**Price history**\n${xboxPriceHistory}\n`, true);
+    embed.addField("PC", `**5 lowest BIN prices**\n- ${pcPrices.LCPrice}\n- ${pcPrices.LCPrice2}\n- ${pcPrices.LCPrice3}\n- ${pcPrices.LCPrice4}\n- ${pcPrices.LCPrice5}\n**Updated**: ${pcPrices.updated}\n**Range**: ${pcPrices.MinPrice} - ${pcPrices.MaxPrice}\n**RPR**: ${pcPrices.PRP}%\n\n**Price history**\n${pcPriceHistory}\n`, true);
 
     return embed;
 };
