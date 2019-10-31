@@ -428,6 +428,13 @@ async function getPlayerDataById(id) {
     return playerData.getPlayerVersionById;
 };
 
+async function getActiveTOTWPlayers() {
+    queryPlayer = `{ getActiveTOTWPlayers{ preferred_position rating meta_info { common_name first_name last_name } } }`;
+    playerData = await clientGraphQL.request(queryPlayer);
+
+    return playerData.getActiveTOTWPlayers;
+};
+
 async function getPlayerPriceHistory(playerId, dateType) {
     const url = `https://www.futbin.com/20/playerGraph?type=${dateType}&year=20&player=${playerId}`;
     const res = await getUrlData(url);
@@ -490,5 +497,6 @@ module.exports = {
     removeItemFlippingList,
     getItemFlippingList,
     addItemFlippingList,
-    updateItemFlippingList
+    updateItemFlippingList,
+    getActiveTOTWPlayers
 };
