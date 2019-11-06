@@ -6,7 +6,7 @@ exports.run = async (client, message, args) => {
         .setDescription("Any question about an ommand? Join the [Supported Discord](https://discord.gg/KUnh4fc) or take a look at the [documentation](https://futbot.tech/documentation).\n" +
             "If an argument has <> around it will mean that it's **required**. If an argument has \[\] around it will mean that it's **not required**.\n" +
             "Command // Example")
-        .addField('Player prices', "player <playername> \[rating\] // fut!player van dijk 90" +
+        .addField('Player prices', "player <playername> \[rating\] // fut!player van dijk 90\n" +
             "playerex <playername> \[rating\] // fut!playerex mbappe\n" +
             "cheapest <rating> <console> // fut!cheapest 83-84 ps\n" +
             "top <console> \[type\] // fut!top xbox otw\n" +
