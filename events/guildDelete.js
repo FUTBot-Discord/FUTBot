@@ -1,5 +1,7 @@
 const rediss = require("redis");
-const { redis } = require("../config");
+const {
+    redis
+} = require("../config");
 const pub = rediss.createClient(redis);
 
 pub.on("error", (err) => {
@@ -7,5 +9,5 @@ pub.on("error", (err) => {
 });
 
 module.exports = (client, guild) => {
-    pub.publish("leftGuild", `{"guildName": "${guild.name.toString()}", "guildOwner": "${guild.owner.user.tag.toString()}"}`);
+    pub.publish("leftGuild", `{"guildName": "${guild.name.toString()}", "guildOwner": "${guild.owner.user.tag.toString()}", "botId": "${client.id}"}`);
 }
