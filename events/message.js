@@ -38,7 +38,7 @@ module.exports = async (client, message) => {
     const cmdlist = await general.getCommandsList();
 
     if (!cmdlist.includes(command)) {
-        if (!await general.getCommandWhitelist(command, guild.id)) return channel.send(`All the 'normal' commands are disabled at FUT20. When FUT21 is released the bot is going to be back normal.`);
+        if (!await general.getCommandWhitelist(command, guild.id)) return channel.send(`This server is not whitelisted for the command called \`${command}\``);
     }
 
     general.insertCommandLog(author.username, author.discriminator, author.id, guild.id, guild.name, channel.name, channel.id, command, args);

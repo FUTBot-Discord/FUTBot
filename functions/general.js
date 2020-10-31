@@ -119,7 +119,7 @@ function getQuality(rating) {
 };
 
 async function getPlayerPrices(playerId) {
-    const url = `https://www.futbin.com/20/playerPrices?player=${playerId}&_=1569551502036`;
+    const url = `https://www.futbin.com/21/playerPrices?player=${playerId}&_=1604102337790`;
     const res = await getUrlData(url);
 
     return res[playerId].prices;
@@ -436,7 +436,7 @@ async function getActiveTOTWPlayers() {
 };
 
 async function getPlayerPriceHistory(playerId, dateType) {
-    const url = `https://www.futbin.com/20/playerGraph?type=${dateType}&year=20&player=${playerId}`;
+    const url = `https://www.futbin.com/21/playerGraph?type=${dateType}&year=21&player=${playerId}`;
     const res = await getUrlData(url);
 
     return res;
