@@ -143,7 +143,7 @@ async function fillInEmbed(playerData) {
     embed.setColor(0x2FF37A);
     // embed.setThumbnail(playerData.headshot);
     embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`, playerData.club.logo);
-    embed.setDescription(`Version: ${general.getRarityName(playerData.rarity)}`);
+    embed.setDescription(`Version: ${general.getRarityName(playerData.ovr, playerData.rareflag)}`);
     // embed.setDescription(`**${ratingNames[0]}**: ${playerData.ratings.pac} **${ratingNames[1]}**: ${playerData.ratings.sho} **${ratingNames[2]}**: ${playerData.ratings.pas} **${ratingNames[3]}**: ${playerData.ratings.dri} **${ratingNames[4]}**: ${playerData.ratings.def} **${ratingNames[5]}**: ${playerData.ratings.phy}\n**WR**: ${playerData.atkWorkRate} / ${playerData.defWorkRate} **SM**: ${playerData.skillMoves}★ **WF**: ${playerData.weakFoot}★\n:footprints: ${playerData.foot} :straight_ruler: ${playerData.height.toString().substring(0, 1)},${playerData.height.toString().substring(1)} M :calendar_spiral: ${playerData.age} years`);
     embed.setFooter(`FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird#0001 | PlayerId: ${playerData.id}`, "https://tjird.nl/futbot.jpg");
     // embed.addField("Nation", playerData.nationName, true);

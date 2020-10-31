@@ -68,10 +68,15 @@ function getWorkrateCharacter(workrate) {
     };
 };
 
-function getRarityName(rarity) {
-    if (raritiesList.find(x => x.id == rarity)) return raritiesList.find(x => x.id === rarity).rarity;
+async function getRarityName(rating, rareflag) {
+    queryRarity = `{ getRarityName(rating: ${rating} rareflag: ${rareflag}) { rarity } }`;
+    res = await clientGraphQL.request(queryRarity);
 
-    return "Unknown cardtype";
+    return playerData.getRarityName["rarity"];
+
+    // if (raritiesList.find(x => x.id == rarity)) return raritiesList.find(x => x.id === rarity).rarity;
+
+    // return "Unknown cardtype";
 };
 
 function getAge(dateString) {
@@ -216,7 +221,7 @@ function formatPlayerData(data, prices, option) {
     return playerData;
 };
 
-function makeArrOfRemainingPlayers(data) {
+async function makeArrOfRemainingPlayers(data) {
     const arr = []
     const limit = 15;
     let choiceNumber = 1;
@@ -229,7 +234,7 @@ function makeArrOfRemainingPlayers(data) {
         if (data[i].common_name) playerName = data[i].common_name;
 
         let rarity = `${data[i].rareflag}-${getQuality(data[i].rating)}`;
-        rarity = getRarityName(rarity);
+        rarity = await getRarityName(data[i].rating, data[i].rareflag);
 
         arr.push({ choice: choiceNumber, name: playerName, ovr: data[i].rating, version: rarity, playerId: data[i].id });
     }

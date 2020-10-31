@@ -17,7 +17,8 @@ exports.run = async (client, message, args) => {
             "sbc get <sbc_id> // fut!sbc get 8", false)
         .addField('Simple calculator', "tax be <price> \[amount\] // fut!tax be 80000 4\n" +
             "tax profit <buy-price> <sell-price> \[amount\] // fut!tax profit 1600 2000 9\n" +
-            "tax tax <price> \[amount\] // fut!tax tax 4500 2", false)
+            "tax tax <price> \[amount\] // fut!tax tax 4500 2\n" +
+            "tech <price> // fut!tech 15000", false)
         .addField("Util", "donate **NO ARGS** // fut!donate\n" +
             "help **NO ARGS** // fut!help\n" +
             "invite **NO ARGS** // fut!invite\n" +
