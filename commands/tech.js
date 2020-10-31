@@ -1,3 +1,5 @@
 exports.run = async (client, message, args) => {
-    return message.reply(parseFloat(message.content) * 1.15);
+    if (!args[0]) return message.reply("You need to fill in a number.");
+
+    return message.reply(parseFloat(args[0]) * 1.15);
 }
