@@ -20,8 +20,10 @@ exports.run = async (client, message, args) => {
     if (!platformList.includes(args[1])) return message.reply("Fill in a valid console as second argument please.");
 
     const url = `https://www.futbin.com/21/players?page=1&${args[1]}_price=200-100000000&player_rating=${args[0]}&sort=${args[1]}_price&order=asc`;
+    console.log(url);
 
     let htmlData = await getHtmlData(url, args[1]);
+    console.log(htmlData);
     htmlData = htmlData[2];
 
     const title = `${args[0]} overall rating players`;
