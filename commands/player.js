@@ -138,7 +138,7 @@ async function fillInEmbed(playerData) {
     embed.setColor(0x2FF37A);
     // embed.setThumbnail(playerData.headshot);
     embed.setAuthor(`${fullName} - ${playerData.ovr} ${playerData.position}`, playerData.club.logo);
-    embed.setDescription(`Version: ${general.getRarityName(playerData.ovr, playerData.rareflag)}`);
+    embed.setDescription(`Version: ${await general.getRarityName(playerData.ovr, playerData.rareflag)}`);
     embed.setFooter(`FUTBot v.2.0.0 | Prices from FUTBIN | Made by Tjird#0001 | PlayerId: ${playerData.id}`, "https://tjird.nl/futbot.jpg");
 
     const psPrices = playerData.prices.ps;
