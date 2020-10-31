@@ -72,7 +72,7 @@ async function getRarityName(rating, rareflag) {
     queryRarity = `{ getRarityName(rating: ${rating} rareflag: ${rareflag}) { rarity } }`;
     res = await clientGraphQL.request(queryRarity);
 
-    return playerData.getRarityName["rarity"];
+    return res.getRarityName["rarity"];
 
     // if (raritiesList.find(x => x.id == rarity)) return raritiesList.find(x => x.id === rarity).rarity;
 
